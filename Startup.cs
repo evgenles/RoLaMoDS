@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RoLaMoDS.Services;
+using RoLaMoDS.Services.Interfaces;
 
 namespace RoLaMoDS
 {
@@ -31,7 +33,7 @@ namespace RoLaMoDS
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddTransient<IImageWorkerService,ImageWorkerService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
