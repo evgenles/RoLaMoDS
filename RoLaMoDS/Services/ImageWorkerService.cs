@@ -22,21 +22,25 @@ namespace RoLaMoDS.Services {
         /// <returns>List of cells</returns>
         private IEnumerable<Cell> DivideImageIntoCells (Image image, int scale) {
             List<Cell> arr = new List<Cell> (100);
-            //Minimum scale 1:5; it`s a cell so scale/5 - count of cell
-            cCell = (int) System.Math.Round ((double) scale / 5);
-            int cellWidth = image.Width / cCell;
-            int cellHeight = image.Height / cCell;
-            for (int i = 0; i < cCell; i++) {
-                for (int j = 0; j < cCell; j++) {
-                    Bitmap cellBmp = new Bitmap (cellWidth, cellHeight);
-                    using (Graphics g = Graphics.FromImage (cellBmp)) {
-                        g.DrawImage (image, 0, 0, new Rectangle (cellWidth * i, cellHeight * j, cellWidth, cellHeight), GraphicsUnit.Pixel);
-                    }
-                    arr.Add (new Cell { CellImage = cellBmp, X = i, Y = j });
+            if (scale > 4 && scale < 51) {
+                //Minimum scale 1:5; it`s a cell so scale/5 - count of cell
+                cCell = (int) System.Math.Round ((double) scale / 5);
+                int cellWidth = image.Width / cCell;
+                int cellHeight = image.Height / cCell;
+                for (int i = 0; i < cCell; i++) {
+                    for (int j = 0; j < cCell; j++) {
+                        Bitmap cellBmp = new Bitmap (cellWidth, cellHeight);
+                        using (Graphics g = Graphics.FromImage (cellBmp)) {
+                            g.DrawImage (image, 0, 0, new Rectangle (cellWidth * i, cellHeight * j, cellWidth, cellHeight), GraphicsUnit.Pixel);
+                        }
+                        arr.Add (new Cell { CellImage = cellBmp, X = i, Y = j });
 
+                    }
                 }
+                return arr;
             }
-            return arr;
+            cCell = -1;
+            return null;
         }
 
         /// <summary>
