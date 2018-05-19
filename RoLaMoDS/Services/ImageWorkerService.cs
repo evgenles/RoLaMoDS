@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using RoLaMoDS.Models;
 using RoLaMoDS.Services.Interfaces;
+using RoLaMoDS.Extention;
 namespace RoLaMoDS.Services {
     public class ImageWorkerService : IImageWorkerService {
 
@@ -92,6 +94,15 @@ namespace RoLaMoDS.Services {
         public int UseImage (Image img, int scale) {
             imageCells = DivideImageIntoCells (img, scale);
             return cCell;
+        }
+
+        public int UseImage(Stream imgStream, int scale)
+        {
+            if(imgStream.TryConvertToImage(out Image img))
+            {
+                return UseImage(img,scale);
+            }
+            return -1;
         }
     }
 }

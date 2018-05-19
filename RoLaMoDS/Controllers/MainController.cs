@@ -25,11 +25,13 @@ namespace RoLaMoDS.Controllers {
         public async Task<IActionResult> UploadMap (IFormFile file, string scale) {
 
             var filePath = Path.GetTempFileName ();
-            if (Int32.TryParse (scale, out int parsedScale)&&parsedScale <=50 &&parsedScale >=5) {
+            if (Int32.TryParse (scale, out int parsedScale) && parsedScale <= 50 && parsedScale >= 5) {
                 string[, ] imageSplitPatches = null;
                 using (var stream = new FileStream (filePath, FileMode.Create)) {
                     await file.CopyToAsync (stream);
-                    int count = _imageWorkerService.UseImage (Image.FromStream (file.OpenReadStream ()), parsedScale);
+                }
+                int count = _imageWorkerService.UseImage (file.OpenReadStream (), parsedScale);
+                if (count != -1) {
                     imageSplitPatches = new string[count, count];
                     var nowPath = "";
                     foreach (var cell in _imageWorkerService) {
@@ -39,21 +41,24 @@ namespace RoLaMoDS.Controllers {
                             _imageWorkerService.MakeBorderOnCell (cell).CellImage.Save (streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
                         }
                     }
-                }
-                string resultPath = Path.Combine ("images", "result.bmp");
-                using (var streamSave = new FileStream (Path.Combine (_env.WebRootPath, resultPath), FileMode.Create)) {
-                    _imageWorkerService.FormResultImage ().Save (streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
+                    string resultPath = Path.Combine ("images", "result.bmp");
+                    using (var streamSave = new FileStream (Path.Combine (_env.WebRootPath, resultPath), FileMode.Create)) {
+                        _imageWorkerService.FormResultImage ().Save (streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
+                    }
+
+                    // process uploaded files
+                    // Don't rely on or trust the FileName property without validation.
+
+                    return View ("Index", (imageSplitPatches, "\\" + resultPath));
                 }
 
-                // process uploaded files
-                // Don't rely on or trust the FileName property without validation.
+                //TODO: File not image error
 
-                return View ("Index", (imageSplitPatches, "\\" + resultPath));
-            }
-            else{
+            } else {
                 //TODO: Scale error
-                return View("Index");
             }
+            return View ("Index");
+
         }
     }
 }
