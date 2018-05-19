@@ -34,6 +34,7 @@ namespace RoLaMoDS
             });
 
             services.AddTransient<IImageWorkerService,ImageWorkerService>();
+            services.AddSingleton<IImageValidator, ImageValidator>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

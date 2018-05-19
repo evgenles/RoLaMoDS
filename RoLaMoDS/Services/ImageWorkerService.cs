@@ -5,6 +5,13 @@ using RoLaMoDS.Models;
 using RoLaMoDS.Services.Interfaces;
 namespace RoLaMoDS.Services {
     public class ImageWorkerService : IImageWorkerService {
+
+        private readonly IImageValidator _imageValidator;
+
+        public ImageWorkerService (IImageValidator imageValidator) {
+            _imageValidator = imageValidator;
+
+        }
         private IEnumerable<Cell> imageCells;
         private int cCell = -1;
         /// <summary>
@@ -42,7 +49,7 @@ namespace RoLaMoDS.Services {
             Image bmp = new Bitmap (firstImage.Width * cCell, firstImage.Height * cCell);
             using (Graphics gr = Graphics.FromImage (bmp)) {
                 foreach (var cell in imageCells) {
-                    gr.DrawImage(cell.CellImage,cell.X * firstImage.Width, cell.Y * firstImage.Height);
+                    gr.DrawImage (cell.CellImage, cell.X * firstImage.Width, cell.Y * firstImage.Height);
                 }
             }
             return bmp;

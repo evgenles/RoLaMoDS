@@ -1,4 +1,8 @@
+/RoLaMoDS/.vscode
+/RoLaMoDS/bin
+/RoLaMoDS/obj
+/RoLaMoDS/images
+/RoLaMoDS.Tests/bin
+/RoLaMoDS.Tests/obj
+.vs/
 .vscode/
-bin/
-obj/
-images/
