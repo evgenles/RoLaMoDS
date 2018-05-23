@@ -1,37 +1,48 @@
 @model (string[,],string)
-<h1> Recognation of Landscapes and modeling dangerous situation system </h1>
-<h2> Sorry. Main page now in development.</h2>
-<form method="post" enctype="multipart/form-data" asp-action="UploadMap">
-    <div>
-        <div>
-            <p>Input scale of imamge. Must be from 5 to 50 </p>
-            <input name="scale">
-        </div>
-        <div>
-            <p>Upload one or more files using this form:</p>
-            <input type="file" name="file" />
-        </div>
+
+<div id="PageEnteringForm" class="TargetPage CenteredPage">
+    <div class="CenteredContainer Container300x200">
+        <a class="NonUnderline" href="#ImageUploading">
+            Выбрать изображение
+        </a>
     </div>
-    <div>
-        <div>
-            <input type="submit" value="Upload" />
-        </div>
+</div>
+
+<div id = "ImageUploading" class="TargetPage CenteredPage">
+    <div class="CenteredContainer">
+        <form method="post" enctype="multipart/form-data" asp-action="UploadMap">
+            <div>
+                <div>
+                    <p>Input scale of imamge. Must be from 5 to 50 </p>
+                    <input name="scale">
+                </div>
+                <div>
+                    <p>Upload one or more files using this form:</p>
+                    <input type="file" name="file" />
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input type="submit" value="Upload" />
+                </div>
+            </div>
+        </form>
+        @{ 
+            @if(Model.Item1!=null){
+                <table>
+                @for(int i =0;i < Model.Item1.GetLength(0);i++)
+                { 
+                    <tr>
+                        @for(int j = 0; j < Model.Item1.GetLength(1);j++){
+                            <td>
+                                <img src=@Model.Item1[i,j] ></img>
+                            </td>
+                        }
+                    </tr>
+                } 
+                </table>
+                <img src=@Model.Item2 ></img>
+            }
+        }
     </div>
-</form>
-@{ 
-    @if(Model.Item1!=null){
-        <table>
-        @for(int i =0;i < Model.Item1.GetLength(0);i++)
-        { 
-            <tr>
-                @for(int j = 0; j < Model.Item1.GetLength(1);j++){
-                    <td>
-                        <img src=@Model.Item1[i,j] ></img>
-                    </td>
-                }
-            </tr>
-        } 
-        </table>
-        <img src=@Model.Item2 ></img>
-    }
-}
+</div>

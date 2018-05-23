@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+}
+html{
+    height: 100%;
+}
+body{
+    background: radial-gradient(at bottom, #FEFFFF, rgb(64, 150, 221));
+    height: 100%;
+}
+header{
+    max-width: 1366px;
+    width: 90%;
+    height: 60px;
+    position: relative;
+    margin: auto;
+}
+
+
+.UserClass{
+    height: 50px;
+    width: 200px;
+    border: 5px inset rgb(11, 121, 246);
+    background-color:  rgba(54, 146, 250, 0.781);
+    top: 0;
+    right: 0;
+    line-height: 50px;  
+    position: absolute;
+    text-align: center;
+}
+.Help{
+    height: 50px;
+    width: 50px;
+    top :0;
+    left: 0;
+    position: absolute;
+    border: 5px inset rgb(11, 121, 246);
+    background-color:  rgba(54, 146, 250, 0.781);
+    fill: #F3F9FE;
+}
+.UserClass>a{
+    font-size: 1.5em;
+    vertical-align: middle;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.UserClass>a:hover{
+    text-shadow: 0px 1px 7px rgb(9, 81, 163);
+}
+main{   
+    width: 90%;
+    max-width: 1366px;
+    height: calc(100% - 2em - 60px);
+    background:#FFFFFF77;
+    margin: auto;
+    box-shadow: 0px 0px 2px 3px #2e2e2e66;
+    position: relative;
+}
+footer {
+    clear: both;
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    line-height: 2em;
+}
+
+.TargetPage:target{
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+.TargetPage{
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.CenteredPage{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.CenteredContainer{
+    margin: auto;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 2em;
+    text-align: center;
+    background-color: rgba(184, 218, 255, 0.46);
+    display: table-cell;
+    vertical-align: middle;   
+    box-shadow: 0px 0px 2px 3px #2e2e2e66;
+    border: none;
+}
+.CenteredContainer a{
+    color: rgba(26, 31, 241, 0.84);
+}
+.Container300x200{
+    width: 300px;
+    height: 200px;
+}
+
+a.NonUnderline, a.NoneUnderline:visited{
+    text-decoration-line: none;
+    
+}
+.White{
+    color: #F3F9FE;
+}
+
+form {
+    border: none;
+}
