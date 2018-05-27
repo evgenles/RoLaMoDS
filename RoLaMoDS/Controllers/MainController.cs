@@ -8,57 +8,77 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RoLaMoDS.Services.Interfaces;
+using RoLaMoDS.Models;
+namespace RoLaMoDS.Controllers
+{
+    public class MainController : ApiController
+    {
+        private readonly IMainControllerService _mainControllerService;
 
-namespace RoLaMoDS.Controllers {
-    public class MainController : Controller {
-        private readonly IImageWorkerService _imageWorkerService;
-        private readonly IHostingEnvironment _env;
-        public MainController (IImageWorkerService imageWorkerService, IHostingEnvironment env) {
-            _imageWorkerService = imageWorkerService;
-            _env = env;
+        public MainController(IMainControllerService mainControllerService)
+        {
+            _mainControllerService = mainControllerService;
         }
-        public IActionResult Index () {
-            return View ();
+
+        private string GetErrorsKeys()
+        {
+            string errors = "";
+            foreach (var ms in ModelState)
+            {
+                if (ms.Value.Errors.Count != 0)
+                {
+                    errors += ms.Key + ";";
+                }
+            }
+            return errors;
+        }
+        public IActionResult Index()
+        {
+            return View();
+
+        }
+
+
+        [HttpPost]
+        public IActionResult UploadMap(UploadImageFileModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var rez = _mainControllerService.UploadImageFromFile(model);
+                return JSON(rez.Item1, rez.Item2, rez.Item3);
+            }
+            else
+            {
+                return JSON("", 400, GetErrorsKeys());
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadMap (IFormFile file, string scale) {
-
-            var filePath = Path.GetTempFileName ();
-            if (Int32.TryParse (scale, out int parsedScale) && parsedScale <= 50 && parsedScale >= 5) {
-                string[, ] imageSplitPatches = null;
-                using (var stream = new FileStream (filePath, FileMode.Create)) {
-                    await file.CopyToAsync (stream);
-                }
-                int count = _imageWorkerService.UseImage (file.OpenReadStream (), parsedScale);
-                if (count != -1) {
-                    imageSplitPatches = new string[count, count];
-                    var nowPath = "";
-                    foreach (var cell in _imageWorkerService) {
-                        nowPath = Path.Combine ("images", $"{cell.X}_{cell.Y}.bmp");
-                        imageSplitPatches[cell.Y, cell.X] = "\\" + nowPath;
-                        using (var streamSave = new FileStream (Path.Combine (_env.WebRootPath, nowPath), FileMode.Create)) {
-                            _imageWorkerService.MakeBorderOnCell (cell).CellImage.Save (streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
-                        }
-                    }
-                    string resultPath = Path.Combine ("images", "result.bmp");
-                    using (var streamSave = new FileStream (Path.Combine (_env.WebRootPath, resultPath), FileMode.Create)) {
-                        _imageWorkerService.FormResultImage ().Save (streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
-                    }
-
-                    // process uploaded files
-                    // Don't rely on or trust the FileName property without validation.
-
-                    return View ("Index", (imageSplitPatches, "\\" + resultPath));
-                }
-
-                //TODO: File not image error
-
-            } else {
-                //TODO: Scale error
+        public async Task<IActionResult> UploadImageFromURL([FromBody] UploadImageURLModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //TODO: Make action
+                return JSON("");
             }
-            return View ("Index");
-
+            else
+            {
+                return JSON("", 400, GetErrorsKeys());
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> UploadImageFromGoogleMap([FromBody] UploadImageURLModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //TODO: Make action
+                return JSON("");
+            }
+            else
+            {
+                return JSON("", 400, GetErrorsKeys());
+            }
         }
     }
 }

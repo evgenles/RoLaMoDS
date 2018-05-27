@@ -16,14 +16,14 @@ namespace RoLaMoDS.Tests.Services
         public void ImageWeightAndHeightOutOfRange()
         {
             Bitmap bmp = new Bitmap(1000000,100);
-            Assert.False(_IImageValidator.IsImageValid(bmp));
+            Assert.False(_IImageValidator.IsImageValidSize(bmp));
         }
 
         [Fact]
         public void ImageWeightAndHeightInRange()
         {
             Bitmap bmp = new Bitmap(200,100);
-            Assert.True(_IImageValidator.IsImageValid(bmp));
+            Assert.True(_IImageValidator.IsImageValidSize(bmp));
         }
     }
 }

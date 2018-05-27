@@ -1,11 +1,137 @@
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using RoLaMoDS.Extention;
+using RoLaMoDS.Models;
 using RoLaMoDS.Services.Interfaces;
 namespace RoLaMoDS.Services
 {
     public class MainControllerSevice : IMainControllerService
     {
+        private readonly IImageWorkerService _imageWorkerService;
+        private readonly IFileService _fileService;
+
+        public MainControllerSevice(IImageWorkerService imageWorkerService, IFileService fileService)
+        {
+            _fileService = fileService;
+            _imageWorkerService = imageWorkerService;
+        }
+
         public void StartRecognize()
         {
             throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Upload image from file with longitude, lantitude and scale
+        /// </summary>
+        /// <param name="model">Model to upload</param>
+        /// <returns>Task of (result, state, message)</returns>
+        public (object, int, string) UploadImageFromFile(UploadImageFileModel model)
+        {
+            var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
+            if (model.File.OpenReadStream().TryConvertToImage(out Image img))
+            {
+                img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
+                //TODO: DB
+                return (new
+                {
+                    resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                }, 200, "");
+            }
+            return ("", 400, "File_Not_Image");
+        }
+
+        /// <summary>
+        /// Upload image from URL with longitude, lantitude and scale
+        /// </summary>
+        /// <param name="model">Model to upload</param>
+        /// <returns>(result, state, message)</returns>
+        public async Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model)
+        {
+            var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
+            using (var client = new HttpClient())
+            {
+                using (var result = await client.GetAsync(model.URL))
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
+                        {
+                            img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
+                            //TODO: DB
+                            return (new
+                            {
+                                resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                            }, 200, "");
+                        }
+                        return ("", 400, "File_Not_Image");
+                    }
+                }
+            }
+            return ("", 400, "Unavailable_URL");
+        }
+
+        /// <summary>
+        /// Split image into cells
+        /// </summary>
+        /// <param name="path">Path of image</param>
+        /// <param name="scale">Scale of image</param>
+        /// <returns>Matrix of path to cell images</returns>
+        public string[,] SplitImage(string path, int scale)
+        {
+
+            int count = _imageWorkerService.UseImage(Image.FromFile(path), scale);
+            var imageSplitPatches = new string[count, count];
+            var filePathes = _fileService.GetNextFilesPath(count * count, DirectoryType.Recognize);
+            int i = 0;
+            foreach (var cell in _imageWorkerService)
+            {
+                //nowPath = Path.Combine("images", $"{cell.X}_{cell.Y}.bmp");
+                //TODO: DB
+                imageSplitPatches[cell.Y, cell.X] = filePathes[i].Remove(0, filePathes[i].LastIndexOf("\\images\\"));
+                using (var streamSave = new FileStream(filePathes[i], FileMode.Create))
+                {
+                    cell.CellImage.Save(streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
+                }
+                i++;
+            }
+            return imageSplitPatches;
+
+        }
+
+        /// <summary>
+        /// Form result image from cells
+        /// </summary>
+        /// <param name="pathes">Matrix of path to cell images</param>
+        /// <returns>Path of result image</returns>
+        public string FormResult(string[,] pathes)
+        {
+            string resultPath = _fileService.GetNextFilesPath(1, DirectoryType.Result)[0];
+            List<Cell> cells = new List<Cell>(pathes.Length);
+            for (int i = 0; i < pathes.GetLength(0); i++)
+            {
+                for (int j = 0; j < pathes.GetLength(1); j++)
+                {
+                    cells.Add(new Cell
+                    {
+                        CellImage = Image.FromFile(pathes[i, j]),
+                        X = i,
+                        Y = j
+                    });
+                }
+            }
+            using (var streamSave = new FileStream(resultPath, FileMode.Create))
+            {
+                _imageWorkerService.FormResultImage(cells).Save(streamSave, System.Drawing.Imaging.ImageFormat.Bmp);
+            }
+
+            return resultPath.Remove(0, resultPath.LastIndexOf("\\images\\"));
         }
     }
 }

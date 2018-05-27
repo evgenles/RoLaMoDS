@@ -34,12 +34,14 @@ namespace RoLaMoDS
             });
 
             services.AddTransient<IImageWorkerService,ImageWorkerService>();
+            services.AddTransient<IMainControllerService,MainControllerSevice>();
             services.AddSingleton<IImageValidator, ImageValidator>();
+            services.AddSingleton<IFileService, FileService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IFileService fileService)
         {
             if (env.IsDevelopment())
             {
@@ -53,6 +55,8 @@ namespace RoLaMoDS
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
+            
+            fileService.CreateImagePathes();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

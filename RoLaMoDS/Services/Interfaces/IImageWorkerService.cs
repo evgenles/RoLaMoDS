@@ -6,7 +6,7 @@ using RoLaMoDS.Models;
 
 namespace RoLaMoDS.Services.Interfaces
 {
-    public interface IImageWorkerService :IEnumerable<Cell>
+    public interface IImageWorkerService : IEnumerable<Cell>
     {
         /// <summary>
         /// Load image into ImageWorkerService. Divide an image into cells with scale. 
@@ -15,7 +15,7 @@ namespace RoLaMoDS.Services.Interfaces
         /// <param name="scale">Scale of image. Minimum scale 1:5, maximum scale 1:50</param>
         /// <returns>Count of cells in line</returns>
         int UseImage(Image img, int scale);
-       
+
         /// <summary>
         /// Load image into ImageWorkerService. Divide an image into cells with scale. 
         /// </summary>
@@ -32,10 +32,16 @@ namespace RoLaMoDS.Services.Interfaces
         Cell MakeBorderOnCell(Cell input);
 
         /// <summary>
-        /// Create an image from cells
+        /// Create an image from cells (uploaded by UseImage)
         /// </summary>
-        /// <param name="cells">Cells to create</param>
         /// <returns>Result image</returns>
-        Image FormResultImage(); 
+        Image FormResultImage();
+
+        /// <summary>
+        /// Create an image from cells 
+        /// </summary>
+        /// <param name="cells">Cells of image</param>
+        /// <returns>Result image</returns>
+        Image FormResultImage(IEnumerable<Cell> cells);
     }
 }
