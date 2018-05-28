@@ -7,9 +7,9 @@
 </div>
 
 <div class="FullPage">
-     <div id = "ImageFromEthernet" class="TargetPage ContentTab">
+     <div id = "ImageFromURL" class="TargetPage ContentTab">
         <form>
-                        <div class="LineContent">
+            <div class="LineContent">
 
                  <div class="Form-Input">
                     <input class="Form-Field" name="Latitude" type="number" min="-90" max="90" placeholder="Широта">
@@ -26,7 +26,6 @@
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Масштаб</label>
                 </div>
-                
             </div>
             <div class="LineContent">
                 <div class="Form-Input">
@@ -34,22 +33,21 @@
                         <div class="Form-Input-Bar"></div>
                         <label class="Form-Label">Image URL</label>
                 </div>
-               <div>
                     <input class="Form-Button" type="submit" value="Загрузить" />
-                </div>
             </div>
         </form>
      </div>
-    <div id = "ImageFromGoogleMaps" class="TargetPage ContentTab">
-             <div class="LineContent">
 
-                 <div class="Form-Input">
-                    <input class="Form-Field" name="Latitude" type="number" min="-90" max="90" placeholder="Широта">
+    <div id = "ImageFromMaps" class="TargetPage ContentTab">
+        <form>
+             <div class="LineContent">
+                <div class="Form-Input">
+                    <input class="Form-Field" name="Latitude" type="number" step="0.000001" min="-90" max="90" placeholder="Широта">
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Широта</label>
                 </div>
                   <div class="Form-Input">
-                    <input class="Form-Field" name="Longitude"  type="number" min="-180" max="180" placeholder="Долгота">
+                    <input class="Form-Field" name="Longitude"  type="number" step="0.000001"min="-180" max="180" placeholder="Долгота">
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Долгота</label>
                 </div>
@@ -59,9 +57,25 @@
                     <label class="Form-Label">Масштаб</label>
                 </div>
             </div>
-            <div>
-                <input class="Form-Button" type="submit" value="Загрузить" />
+            <div class="LineContent">
+                 <div class="Form-Input">
+                     <select class="Form-Field" name="MapType">
+                         <option label ="Bing" value="1" selected/>
+                         <option label="Google" value="2" />
+                     </select>
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Источник карты</label>
+                </div>
+                <div class="Form-Input">
+                    <input class="Form-Field" name="Zoom" type="number" min="1" max="23" placeholder="Увеличение" 
+                    title="1 - весь мир, 20 - дома. Для Украины максимум 19"
+                    >
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Увеличение</label>
+                </div>
+                    <input class="Form-Button" type="submit" value="Загрузить" />
             </div>
+        </form>
      </div>
     <div id = "ImageFromLocal" class="TargetPage ContentTab">
         <form>
@@ -98,16 +112,14 @@
                 </label>
                     
                 </div>
-                <div>
                     <input class="Form-Button" type="submit" value="Загрузить" />
-                </div>
             </div>
         </form>
     </div>
     <div class="LeftTabs">
             <a href="#ImageFromLocal" class="NonUnderline White"><span>From local</span></a>
-            <a href="#ImageFromEthernet" class="NonUnderline White"><span> From Ethernet</span></a>
-            <a href="#ImageFromGoogleMaps" class="NonUnderline White"><span> From Google Maps</span></a>
+            <a href="#ImageFromURL" class="NonUnderline White"><span> From Ethernet</span></a>
+            <a href="#ImageFromMaps" class="NonUnderline White"><span> From Google Maps</span></a>
     </div>
     <div id="ImageList" class="RightBottomPage">
         <img class="ActiveImage" src="https://images6.alphacoders.com/702/702757.png" />

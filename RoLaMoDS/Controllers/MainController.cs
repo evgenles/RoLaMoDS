@@ -40,7 +40,7 @@ namespace RoLaMoDS.Controllers
 
 
         [HttpPost]
-        public IActionResult UploadMap(UploadImageFileModel model)
+        public IActionResult UploadImageFromFile(UploadImageFileModel model)
         {
             if (ModelState.IsValid)
             {
@@ -58,22 +58,22 @@ namespace RoLaMoDS.Controllers
         {
             if (ModelState.IsValid)
             {
-                //TODO: Make action
-                return JSON("");
+                var rez = await _mainControllerService.UploadImageFromURL(model);
+                return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else
             {
                 return JSON("", 400, GetErrorsKeys());
             }
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> UploadImageFromGoogleMap([FromBody] UploadImageURLModel model)
+        public async Task<IActionResult> UploadImageFromMap([FromBody] UploadImageMapModel model)
         {
             if (ModelState.IsValid)
             {
-                //TODO: Make action
-                return JSON("");
+                var rez = await _mainControllerService.UploadImageFromMaps (model);
+                 return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else
             {

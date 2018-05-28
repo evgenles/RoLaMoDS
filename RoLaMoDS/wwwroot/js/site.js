@@ -1,6 +1,5 @@
 ﻿function toFormData(form) {
     var fdata = new FormData();
-    document.getElementById("")
     var elements = form.querySelectorAll("input, select, textarea");
     for (var i = 0; i < elements.length; ++i) {
         var element = elements[i];
@@ -20,6 +19,21 @@
     return fdata;
 }
 
+function toJSONData(form){
+    var data = {};
+    var elements = form.querySelectorAll("input, select, textarea");
+    for (var i = 0; i < elements.length; ++i) {
+        var element = elements[i];
+
+        var name = element.name;
+        var value = element.value;
+
+        if (name) 
+                data[name] = value;
+    }
+    return JSON.stringify(data);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     location = location.hash || "#PageEnteringForm"
     document.getElementById("Image-Upload-Input").addEventListener("change", (e) => {
@@ -27,7 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (filename)
             document.querySelector("#Image-Upload-Input ~ label > span").innerHTML = filename;
     });
-    var form = document.getElementById("ImageFromLocal").querySelector("form");
+    var formFile = document.getElementById("ImageFromLocal").querySelector("form");
+    var formURL = document.getElementById("ImageFromURL").querySelector("form");
+    var formMap = document.getElementById("ImageFromMaps").querySelector("form");
+
     var imgList = document.getElementById("ImageList");
 
     document.getElementById("ImagePrevLeft").addEventListener("click", () => {
@@ -52,21 +69,55 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    form.addEventListener("submit", (e) => {
+    function insertActiveImageFromJSON(json){
+        var imgel = document.createElement("img");
+        imgel.setAttribute("src", json.data.resultImagePath);
+        imgel.classList.add("ActiveImage");
+        for(var i = 0; i<imgList.children.length;i++){
+            imgList.children[i].classList.remove("ActiveImage");
+        }
+        imgList.insertAdjacentElement("afterbegin",imgel);
+    }
+
+    formFile.addEventListener("submit", (e) => {
         e.preventDefault();
-        fetch("/Main/UploadMap", {
+        fetch("/Main/UploadImageFromFile", {
             method: "POST",
-            body: toFormData(form)
+            body: toFormData(formFile)
         }).then((response) => response.json())
             .then((json) => {
-                json = JSON.parse(json)
-                var imgel = document.createElement("img");
-                imgel.setAttribute("src", json.data.resultImagePath);
-                imgel.classList.add("ActiveImage");
-                for(var i = 0; i<imgList.children.length;i++){
-                    imgList.children[i].classList.remove("ActiveImage");
-                }
-                imgList.insertAdjacentElement("afterbegin",imgel);
+                json = JSON.parse(json);
+                insertActiveImageFromJSON(json);
+            });
+    });
+
+    formURL.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("/Main/UploadImageFromURL", {
+            method: "POST",
+            body: toJSONData(formURL),
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                insertActiveImageFromJSON(json);
+            });
+    });
+
+    formMap.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("/Main/UploadImageFromMap", {
+            method: "POST",
+            body: toJSONData(formMap),
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                insertActiveImageFromJSON(json);
             });
     });
 });

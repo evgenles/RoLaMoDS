@@ -177,20 +177,23 @@ a.NonUnderline, a.NoneUnderline:visited{
 }
 .Form-Input{
     position: relative;
-    margin: 1.5em 1em;
+    margin: 1em 1em;
 }
+
 .Form-Field{
     width: 100%;
     outline: none;
     background: none;
     height: 1.5em;
-    padding: 0.4em 0.2em 0 0.2em;
     font-size: 1em;
     line-height: 1.5em;
     color: black;
     border: none;
     opacity: 0.01;
     transition: opacity 0.3s ease;
+}
+select.Form-Field{
+    opacity: 1;
 }
 Form-Field::placeholder {
     color: #a6a6a6;
@@ -236,7 +239,9 @@ input.Form-Field:not(:placeholder-shown){
     opacity: 1;
 }
 input.Form-Field:not(:placeholder-shown) ~ .Form-Label,
-.Form-Field:focus ~ .Form-Label{
+.Form-Field:focus ~ .Form-Label,
+select.Form-Field ~ .Form-Label
+{
   transform: translateY(-100%)  translateY(-2px) scale(0.9);
   cursor: pointer;
   pointer-events: auto;
@@ -248,20 +253,23 @@ input.Form-Field:not(:placeholder-shown) ~ .Form-Label,
     flex-direction: row;
 }
 .LineContent>div{
-    flex-grow:1;
+    flex-grow:2;
 }
 .Form-Button{
+    position: relative;
+    flex-grow:1;
     padding: 5px 20px;
     letter-spacing: 0.05em;
     font-size: 1.25em;
-    background: none;
     float: right;
     border: none;
     background: rgba(11, 121, 246,.5);
     color: #F3F9FE;
     box-shadow: 0px 0px 1px 2px #2e2e2e88;
+    height: 35px;
     cursor: pointer;
-    margin: 0 1em;
+    margin: 1em 1em;
+    max-width: 28%;
 }
 .Form-Field[type=file]{
     width: 0.1px;
@@ -279,7 +287,7 @@ input.Form-Field:not(:placeholder-shown) ~ .Form-Label,
     cursor: pointer;
     box-shadow: 0px 0px 1px 2px #2e2e2e88;
     padding: 5px 20px;
-    margin: 0 1em;
+    margin: 1em 1em;
 }
 .Form-Field[type=file] + label >svg{
     margin-top: -0.25em;
@@ -349,4 +357,5 @@ input.Form-Field:not(:placeholder-shown) ~ .Form-Label,
     left: 50%;
     transform: translateX(-50%);
     width: auto;
+    margin: 0;
 }

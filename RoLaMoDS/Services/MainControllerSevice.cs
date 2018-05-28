@@ -78,6 +78,54 @@ namespace RoLaMoDS.Services
         }
 
         /// <summary>
+        /// Upload image from Google maps or Bing Maps with longitude, lantitude and scale
+        /// </summary>
+        /// <param name="model">Model to upload</param>
+        /// <returns>(result, state, message)</returns>
+        public async Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model)
+        {
+            var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
+            var key = "";
+            var url ="";
+            switch(model.MapType){
+                case MapTypes.Bing:
+                    key = "AsxCWNx09JBu4SthLwqimpbExMR30Ho7iVzGaxCp6TsMzlDn9G7f3O6tZS40io7K";
+                    url = $@"https://dev.virtualearth.net/REST/v1/Imagery/Map/Aerial/{model.Latitude},"+
+                        $@"{model.Longitude}/{model.Zoom}?mapSize={model.MapSizeX??2000},{model.MapSizeY??1500}&key={key}";
+                    break;
+                case MapTypes.Google:
+                    key= "AIzaSyD1Gub16QiBvQ4olb_0HvFidiqQoPKsrkk";
+                    url = $@"https://maps.googleapis.com/maps/api/staticmap?center={model.Latitude},"+
+                        $@"{model.Longitude}&zoom={model.Zoom}&size={model.MapSizeX??640}x{model.MapSizeY??640}&key={key}"+
+                        "&maptype=satellite&scale=1&format=bmp";
+                    break;
+            }
+            using (var client = new HttpClient())
+            {
+                using (var result = await client.GetAsync(url))
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        //TODO: Handle error
+
+                        if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
+                        {
+                            img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
+                            //TODO: DB
+                            return (new
+                            {
+                                resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                            }, 200, "");
+                        }
+                        return ("", 400, "File_Not_Image");
+                    }
+                }
+            }
+            return ("", 400, "Unavailable_URL");
+        }
+
+
+        /// <summary>
         /// Split image into cells
         /// </summary>
         /// <param name="path">Path of image</param>

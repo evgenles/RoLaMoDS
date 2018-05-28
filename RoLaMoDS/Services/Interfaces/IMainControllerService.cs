@@ -22,6 +22,13 @@ namespace RoLaMoDS.Services.Interfaces
         Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model);
 
         /// <summary>
+        /// Upload image from Google maps or Bing Maps with longitude, lantitude and scale
+        /// </summary>
+        /// <param name="model">Model to upload</param>
+        /// <returns>(result, state, message)</returns>
+        Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model);
+
+        /// <summary>
         /// Split image into cells
         /// </summary>
         /// <param name="path">Path of image</param>
