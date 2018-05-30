@@ -23,13 +23,6 @@ namespace RoLaMoDS.Tests.Services {
         }
 
         [Fact]
-        public void UseImageScaleOutOfRange () {
-            Bitmap bmp = new Bitmap (100, 100);
-            Assert.True (_IImageWorker.UseImage (bmp, 55) == -1);
-            Assert.True (_IImageWorker.UseImage (bmp, 2) == -1);
-        }
-
-        [Fact]
         public void MakeBorderTest () {
             Bitmap bmp = new Bitmap (100, 100);
             Models.Cell resultCell = _IImageWorker.MakeBorderOnCell (new Models.Cell {

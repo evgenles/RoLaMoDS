@@ -82,7 +82,9 @@ namespace RoLaMoDS.Services
                 if (fileDirectory == null)
                 {
                     fileDirectory = Directory.CreateDirectory(Path.Combine(imgDir,
-                        (System.Convert.ToUInt16(directories[directories.Length - 1]) + 1).ToString())).FullName;
+                        (System.Convert.ToUInt16(directories[directories.Length - 1]
+                            .Remove(0, directories[directories.Length - 1].LastIndexOf("\\uploads\\")+9)) + 1)
+                            .ToString())).FullName;
                 }
             }
             string[] rezultNames = new string[CountFile];
