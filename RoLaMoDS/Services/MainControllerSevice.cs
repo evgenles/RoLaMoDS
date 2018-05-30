@@ -57,24 +57,31 @@ namespace RoLaMoDS.Services
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
             using (var client = new HttpClient())
             {
-                using (var result = await client.GetAsync(model.URL))
+                try
                 {
-                    if (result.IsSuccessStatusCode)
+                    using (var result = await client.GetAsync(model.URL))
                     {
-                        if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
+                        if (result.IsSuccessStatusCode)
                         {
-                            img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
-                            //TODO: DB
-                            return (new
+                            if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
                             {
-                                resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
-                            }, 200, "");
+                                img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
+                                //TODO: DB
+                                return (new
+                                {
+                                    resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                                }, 200, "");
+                            }
+                            return ("", 400, "File_Not_Image");
                         }
-                        return ("", 400, "File_Not_Image");
                     }
                 }
+                catch (HttpRequestException)
+                {
+                    return ("", 404, "Host_Not_found");
+                }
             }
-            return ("", 400, "Unavailable_URL");
+            return ("", 404, "Unavailable_URL");
         }
 
         /// <summary>
@@ -86,39 +93,57 @@ namespace RoLaMoDS.Services
         {
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
             var key = "";
-            var url ="";
-            switch(model.MapType){
+            var url = "";
+            switch (model.MapType)
+            {
                 case MapTypes.Bing:
                     key = "AsxCWNx09JBu4SthLwqimpbExMR30Ho7iVzGaxCp6TsMzlDn9G7f3O6tZS40io7K";
-                    url = $@"https://dev.virtualearth.net/REST/v1/Imagery/Map/Aerial/{model.Latitude},"+
-                        $@"{model.Longitude}/{model.Zoom}?mapSize={model.MapSizeX??2000},{model.MapSizeY??1500}&key={key}";
+                    url = $@"https://dev.virtualearth.net/REST/v1/Imagery/Map/Aerial/{model.Latitude}," +
+                        $@"{model.Longitude}/{model.Zoom}?mapSize={model.MapSizeX ?? 2000},{model.MapSizeY ?? 1500}&key={key}";
                     break;
                 case MapTypes.Google:
-                    key= "AIzaSyD1Gub16QiBvQ4olb_0HvFidiqQoPKsrkk";
-                    url = $@"https://maps.googleapis.com/maps/api/staticmap?center={model.Latitude},"+
-                        $@"{model.Longitude}&zoom={model.Zoom}&size={model.MapSizeX??640}x{model.MapSizeY??640}&key={key}"+
+                    key = "AIzaSyD1Gub16QiBvQ4olb_0HvFidiqQoPKsrkk";
+                    url = $@"https://maps.googleapis.com/maps/api/staticmap?center={model.Latitude}," +
+                        $@"{model.Longitude}&zoom={model.Zoom}&size={model.MapSizeX ?? 640}x{model.MapSizeY ?? 640}&key={key}" +
                         "&maptype=satellite&scale=1&format=bmp";
                     break;
             }
             using (var client = new HttpClient())
             {
-                using (var result = await client.GetAsync(url))
+                try
                 {
-                    if (result.IsSuccessStatusCode)
+                    using (var result = await client.GetAsync(url))
                     {
-                        //TODO: Handle error
-
-                        if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
+                        if (result.IsSuccessStatusCode)
                         {
-                            img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
-                            //TODO: DB
-                            return (new
+                            //TODO: Handle error
+
+                            if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
                             {
-                                resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
-                            }, 200, "");
+                                Bitmap bmp  = (Bitmap)img;
+
+                                if(model.MapType==MapTypes.Bing&&( bmp.GetPixel(0,bmp.Height-1).Name == "fff5f2ed"||
+                                     bmp.GetPixel(bmp.Width-1,bmp.Height-1).Name == "fff5f2ed")|| 
+
+                                     (model.MapType==MapTypes.Google&&( bmp.GetPixel(0,bmp.Height-1).Name == "ffe4e2de"||
+                                     bmp.GetPixel(bmp.Width-1,bmp.Height-1).Name == "ffe4e2de"))
+                                ){
+                                    return ("", 400, "Image_So_Zommed");
+                                }
+                                img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
+                                //TODO: DB
+                                return (new
+                                {
+                                    resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                                }, 200, "");
+                            }
+                            return ("", 400, "File_Not_Image");
                         }
-                        return ("", 400, "File_Not_Image");
                     }
+                }
+                catch (HttpRequestException)
+                {
+                    return ("", 404, "Host_Not_found");
                 }
             }
             return ("", 400, "Unavailable_URL");
