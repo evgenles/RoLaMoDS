@@ -1,6 +1,6 @@
 using System;
 
-namespace RoLaMoDS.Models
+namespace RoLaMoDS.Models.ViewModels
 {
     public class ErrorViewModel
     {

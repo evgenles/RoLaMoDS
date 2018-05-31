@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using RoLaMoDS.Models;
+using RoLaMoDS.Models.ViewModels;
 
 namespace RoLaMoDS.Services.Interfaces
 {
@@ -12,7 +13,7 @@ namespace RoLaMoDS.Services.Interfaces
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        (object, int, string) UploadImageFromFile(UploadImageFileModel model);
+        Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model);
 
         /// <summary>
         /// Upload image from URL with longitude, lantitude and scale

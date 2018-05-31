@@ -1,4 +1,4 @@
-namespace RoLaMoDS.Models
+namespace RoLaMoDS.Models.Enums
 {
     public enum MapTypes
     {

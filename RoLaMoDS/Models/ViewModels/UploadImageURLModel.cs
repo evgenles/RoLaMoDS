@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RoLaMoDS.Models
+namespace RoLaMoDS.Models.ViewModels
 {
     public class UploadImageURLModel:UploadImageModel
     {

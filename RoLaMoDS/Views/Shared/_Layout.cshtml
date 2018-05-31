@@ -22,9 +22,10 @@
         <div class="Header">
             <a href="#PageEnteringForm" class="White NonUnderline"> RoLaMods </a>
         </div>
-         @await Html.PartialAsync("_LoginPartitialView")
+            <a class="NonUnderline White UserClass" href="#SignIn">Войти</a>
    </header>
    <main>
+       @await Html.PartialAsync("_LoginPartitialView")
        @RenderBody()
    </main>
    <footer>

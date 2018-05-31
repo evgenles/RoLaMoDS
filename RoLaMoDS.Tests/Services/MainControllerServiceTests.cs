@@ -2,6 +2,9 @@ using Xunit;
 using RoLaMoDS.Services.Interfaces;
 using RoLaMoDS.Services;
 using RoLaMoDS.Models;
+using RoLaMoDS.Models.ViewModels;
+using RoLaMoDS.Models.Enums;
+using RoLaMoDS.Data;
 using Moq;
 using System.IO;
 using System.Linq;
@@ -27,7 +30,9 @@ namespace RoLaMoDS.Tests.Services
                 .Returns(new string[] { "1", "2", "3", "4", "5" }.Select(s => Path.Combine(cd, "images", s + ".bmp"))
                 .ToArray());
             var ImageService = new Mock<IImageWorkerService>();
-            MainControllerService = new MainControllerSevice(ImageService.Object, FileService.Object);
+            var MoqContext = new Mock<ApplicationDBContext>();
+
+            MainControllerService = new MainControllerSevice(ImageService.Object, FileService.Object, MoqContext.Object);
         }
 
         public void Dispose()
@@ -37,7 +42,7 @@ namespace RoLaMoDS.Tests.Services
         }
 
         [Fact]
-        public void FileUploadTest()
+        public async Task FileUploadTest()
         {
             var FileMoq = new Mock<IFormFile>();
             var cd = Directory.GetCurrentDirectory();
@@ -51,7 +56,7 @@ namespace RoLaMoDS.Tests.Services
                 Longitude = 0,
                 Scale = 17
             };
-            var ret = MainControllerService.UploadImageFromFile(model);
+            var ret = await MainControllerService.UploadImageFromFile(model);
             Assert.True(File.Exists(cd + "\\images\\101.bmp"));
             var expected = (new { resultImagePath = "\\images\\101.bmp" }, 200, "");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -125,7 +130,7 @@ namespace RoLaMoDS.Tests.Services
         }
 
 
-        
+
         [Fact]
         ///WARNING! Need enternet
         public async Task MapBingUploadWhiteImageTest()
@@ -141,13 +146,13 @@ namespace RoLaMoDS.Tests.Services
             };
             var ret = await MainControllerService.UploadImageFromMaps(model);
             Assert.False(File.Exists(cd + "\\images\\101.bmp"));
-            var expected =  ("", 400, "Image_So_Zommed");
+            var expected = ("", 400, "Image_So_Zommed");
             Assert.Equal(expected.Item2, ret.Item2);
             Assert.Equal(expected.Item3, ret.Item3);
             Assert.Equal(expected.Item1.GetHashCode(), ret.Item1.GetHashCode());
             File.Delete(cd + "\\images\\101.bmp");
         }
-        
+
 
         [Fact]
         ///WARNING! Need enternet
@@ -171,7 +176,7 @@ namespace RoLaMoDS.Tests.Services
             File.Delete(cd + "\\images\\101.bmp");
         }
 
-         [Fact]
+        [Fact]
         ///WARNING! Need enternet
         public async Task MapGoogleUploadWhiteImageTest()
         {
@@ -186,7 +191,7 @@ namespace RoLaMoDS.Tests.Services
             };
             var ret = await MainControllerService.UploadImageFromMaps(model);
             Assert.False(File.Exists(cd + "\\images\\101.bmp"));
-            var expected =  ("", 400, "Image_So_Zommed");
+            var expected = ("", 400, "Image_So_Zommed");
             Assert.Equal(expected.Item2, ret.Item2);
             Assert.Equal(expected.Item3, ret.Item3);
             Assert.Equal(expected.Item1.GetHashCode(), ret.Item1.GetHashCode());

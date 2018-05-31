@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RoLaMoDS.Services.Interfaces;
 using RoLaMoDS.Models;
+using RoLaMoDS.Models.ViewModels;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 namespace RoLaMoDS.Controllers
 {
     public class MainController : ApiController
@@ -20,18 +24,7 @@ namespace RoLaMoDS.Controllers
             _mainControllerService = mainControllerService;
         }
 
-        private string GetErrorsKeys()
-        {
-            string errors = "";
-            foreach (var ms in ModelState)
-            {
-                if (ms.Value.Errors.Count != 0)
-                {
-                    errors += ms.Key + ";";
-                }
-            }
-            return errors;
-        }
+
         public IActionResult Index()
         {
             return View();
@@ -40,11 +33,13 @@ namespace RoLaMoDS.Controllers
 
 
         [HttpPost]
-        public IActionResult UploadImageFromFile(UploadImageFileModel model)
+        [Authorize]
+        public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
         {
             if (ModelState.IsValid)
             {
-                var rez = _mainControllerService.UploadImageFromFile(model);
+                //User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var rez = await _mainControllerService.UploadImageFromFile(model);
                 return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else
