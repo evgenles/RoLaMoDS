@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using RoLaMoDS.Models;
+using RoLaMoDS.Models.ViewModels;
 
 namespace RoLaMoDS.Services.Interfaces
 {
@@ -12,21 +14,21 @@ namespace RoLaMoDS.Services.Interfaces
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        (object, int, string) UploadImageFromFile(UploadImageFileModel model);
+        Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model, Guid userId);
 
         /// <summary>
         /// Upload image from URL with longitude, lantitude and scale
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model);
+        Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model, Guid userId);
 
         /// <summary>
         /// Upload image from Google maps or Bing Maps with longitude, lantitude and scale
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model);
+        Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model, Guid userId);
 
         /// <summary>
         /// Split image into cells

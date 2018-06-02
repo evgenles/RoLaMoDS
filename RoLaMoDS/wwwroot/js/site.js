@@ -29,6 +29,9 @@ function toJSONData(form){
         var value = element.value;
 
         if (name) 
+            if(element.type=="checkbox"||element.type=="radio")
+                data[name] = element.checked;
+            else
                 data[name] = value;
     }
     return JSON.stringify(data);
@@ -83,7 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         fetch("/Main/UploadImageFromFile", {
             method: "POST",
-            body: toFormData(formFile)
+            body: toFormData(formFile),
+            credentials: 'same-origin',
         }).then((response) => response.json())
             .then((json) => {
                 json = JSON.parse(json);
@@ -96,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("/Main/UploadImageFromURL", {
             method: "POST",
             body: toJSONData(formURL),
+            credentials: 'same-origin',
             headers: {
              'Content-Type': 'application/json'
             }
@@ -111,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("/Main/UploadImageFromMap", {
             method: "POST",
             body: toJSONData(formMap),
+            credentials: 'same-origin',
             headers: {
              'Content-Type': 'application/json'
             }
@@ -119,5 +125,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 json = JSON.parse(json);
                 insertActiveImageFromJSON(json);
             });
+    });
+
+    var signInForm = document.getElementById("SignIn").querySelector("form");
+    signInForm.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        fetch("/User/SignIn", {
+            method: "POST",
+            body: toJSONData(signInForm),
+            credentials: 'same-origin',
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((json) => {
+            json = JSON.parse(json);
+            console.log(json);
+        });
+    });
+
+    var signUpForm = document.getElementById("SignUp").querySelector("form");
+    signUpForm.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        fetch("/User/Register", {
+            method: "POST",
+            body: toJSONData(signUpForm),
+            credentials: 'same-origin',
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((json) => {
+            json = JSON.parse(json);
+            console.log(json);
+        });
+    });
+    var oAuthRegisterForm = document.getElementById("OAuthRegister").querySelector("form");
+    oAuthRegisterForm.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        fetch("/User/OAuthRegister", {
+            method: "POST",
+            body: toJSONData(oAuthRegisterForm),
+            credentials: 'same-origin',
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((json) => {
+            json = JSON.parse(json);
+            console.log(json);
+        });
     });
 });

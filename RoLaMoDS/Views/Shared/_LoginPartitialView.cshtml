@@ -1,3 +1,76 @@
-<div class="UserClass">
-    <a class="NonUnderline White" href="#">Войти</a>
+
+<div id ="SignIn" class="TargetPage PopUp"> 
+        <form>
+             <div class="Form-Input">
+                    <input class="Form-Field" name="Login" placeholder="Логин">
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Логин</label>
+                </div>
+                  <div class="Form-Input">
+                    <input class="Form-Field" type="password" name="Password" placeholder="Пароль">
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Пароль</label>
+                </div>
+                 <div class="Form-Checkbox">
+                    <label class="Form-Label">
+                        <span>Запомнить </span>
+                            <input type="checkbox"  name="RememberMe" placeholder="Запомнить">
+                    </label>
+                </div>
+                <div class="LineContent">
+                    <a class="Form-Button Google" href="/User/OAuth?provider=GoogleAuth">
+                        <span class="icon" id="GoogleIcon"></span><label>Google Auth</label>
+                    </a>
+                    <div>
+                        <input class="Form-Button" type="submit" value="Войти" />
+                    </div>
+                </div>
+                <a class="Form-Button NonUnderline CenterButton" href="#SignUp">Зарегистрироватся</a>
+        </form>
+</div>
+
+
+<div id ="SignUp" class="TargetPage PopUp"> 
+        <form>
+            <div class="Form-Input">
+                    <input class="Form-Field" name="Email" placeholder="E-mail">
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">E-mail</label>
+                </div>
+             <div class="Form-Input">
+                    <input class="Form-Field" name="Login" placeholder="Логин">
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Логин</label>
+                </div>
+                  <div class="Form-Input">
+                    <input class="Form-Field" type="password" name="Password" placeholder="Пароль">
+                    <div class="Form-Input-Bar"></div>
+                    <label class="Form-Label">Пароль</label>
+                </div>
+                <div class="LineContent">
+                    <input class="Form-Button CenterButton" type="submit" value="Зарегистрироватся" />
+                 </div>
+                 <div class="LineContent">
+                    <a class="Form-Button Google CenterButton" href="/User/OAuth?provider=GoogleAuth">
+                            <span class="icon" id="GoogleIcon"></span><label>Google Auth</label>
+                    </a>
+                </div>
+        </form>
+
+</div>
+
+<div id ="OAuthRegister" class="TargetPage PopUp"> 
+    <form>
+        <div class="Form-Input">
+            <input class="Form-Field" name="Login" placeholder="Логин">
+            <div class="Form-Input-Bar"></div>
+            <label class="Form-Label">Логин</label>
+        </div>
+        <div class="Form-Input">
+            <input class="Form-Field" type="password" name="Password" placeholder="Пароль">
+            <div class="Form-Input-Bar"></div>
+            <label class="Form-Label">Пароль</label>
+        </div>
+        <input class="Form-Button" type="submit" value="Зарегистрироватся" />
+    </form>
 </div>

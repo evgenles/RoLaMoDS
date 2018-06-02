@@ -27,6 +27,10 @@ header{
     line-height: 50px;  
     position: absolute;
     text-align: center;
+    font-size: 1.5em;
+    vertical-align: middle;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .Help{
     height: 50px;
@@ -48,12 +52,6 @@ header{
     left: calc(50% - 50px);
     transform: translateX(-50%);
     line-height: 50px;
-}
-.UserClass>a{
-    font-size: 1.5em;
-    vertical-align: middle;
-    font-weight: bold;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .Header>a{
     font-family: 'Cardo', serif;
@@ -255,6 +253,10 @@ select.Form-Field ~ .Form-Label
 .LineContent>div{
     flex-grow:2;
 }
+.LineContent>.ThreeItem{
+    max-width: 28%;
+
+}
 .Form-Button{
     position: relative;
     flex-grow:1;
@@ -266,10 +268,9 @@ select.Form-Field ~ .Form-Label
     background: rgba(11, 121, 246,.5);
     color: #F3F9FE;
     box-shadow: 0px 0px 1px 2px #2e2e2e88;
-    height: 35px;
+    height: 40px;
     cursor: pointer;
     margin: 1em 1em;
-    max-width: 28%;
 }
 .Form-Field[type=file]{
     width: 0.1px;
@@ -297,6 +298,32 @@ select.Form-Field ~ .Form-Label
     right: 0;
     fill: white;
     vertical-align: middle;
+}
+.Form-Checkbox{
+    position: relative;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+.Form-Checkbox .Form-Label{
+    position: relative;
+  cursor: pointer;
+  pointer-events: auto;
+  padding-left: 1.75em;
+  text-align: left;
+  color: #333;
+  margin-bottom: 0.5em;
+}
+.Form-Checkbox .Form-Label input[type='checkbox']{
+    position: absolute;
+    left: 0.25em;
+    top: 0em;
+    margin: 0;
+    padding: 0;
+    display: block;
+    color: #999;
+    width: 1.5em;
+    height: 1.5em;
 }
 .RightBottomPage{
     position: relative;
@@ -359,3 +386,61 @@ select.Form-Field ~ .Form-Label
     width: auto;
     margin: 0;
 }
+
+.PopUp{
+    position: absolute;
+    max-width: 460px;
+    min-height: 360px;
+    width: 60%;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    opacity: 0.4;
+    color: white;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0px 0px 2px 3px #2e2e2e66;
+}
+.PopUp .Form-Input{
+    margin: 2em 1em;
+}
+
+.Form-Button.Google {
+    background: white;
+    color: #444;
+    width: 130px;
+    border-radius: 5px;
+    border: thin solid #888;
+    box-shadow: 1px 1px 1px grey;
+    padding: 2px 20px 2px 0px; 
+    white-space: nowrap;
+    max-width: 130px;
+  }
+  a>label {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+    /* Use the Roboto font that is loaded in the <head> */
+    font-family: 'Roboto', sans-serif;
+  }
+  a>.icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 42px;
+    height: 42px;
+  }
+  #GoogleIcon{
+    background: url('/identity/g-normal.png') transparent 5px 50% no-repeat;
+  }
+  .CenterButton{
+      font-size: 1.4em;
+      letter-spacing: 0;
+      float: left;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 1em 0 0 0;
+      max-width: fit-content;
+  }

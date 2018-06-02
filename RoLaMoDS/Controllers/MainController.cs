@@ -9,76 +9,72 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RoLaMoDS.Services.Interfaces;
 using RoLaMoDS.Models;
+using RoLaMoDS.Models.ViewModels;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
 namespace RoLaMoDS.Controllers
 {
     public class MainController : ApiController
     {
         private readonly IMainControllerService _mainControllerService;
-
-        public MainController(IMainControllerService mainControllerService)
+        public MainController(IMainControllerService mainControllerService,
+                           UserManager<UserModel> userManager,
+                           SignInManager<UserModel> signInManager):
+                           base(userManager, signInManager)
         {
             _mainControllerService = mainControllerService;
         }
 
-        private string GetErrorsKeys()
-        {
-            string errors = "";
-            foreach (var ms in ModelState)
-            {
-                if (ms.Value.Errors.Count != 0)
-                {
-                    errors += ms.Key + ";";
-                }
-            }
-            return errors;
-        }
+
         public IActionResult Index()
         {
             return View();
-
         }
-
-
-        [HttpPost]
-        public IActionResult UploadImageFromFile(UploadImageFileModel model)
+        private async Task<IActionResult> Upload<T>(T model) where T : UploadImageModel
         {
             if (ModelState.IsValid)
             {
-                var rez = _mainControllerService.UploadImageFromFile(model);
+                Guid userid = GetUserId();                
+                (object, int, string) rez = ("", 200, "");
+                if (model is UploadImageFileModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromFile(model as UploadImageFileModel, userid);
+                }
+                else if (model is UploadImageURLModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromURL(model as UploadImageURLModel, userid);
+                }
+                else if (model is UploadImageMapModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromMaps(model as UploadImageMapModel, userid);
+                }
                 return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else
             {
                 return JSON("", 400, GetErrorsKeys());
             }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
+        {
+            return await Upload<UploadImageFileModel>(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UploadImageFromURL([FromBody] UploadImageURLModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var rez = await _mainControllerService.UploadImageFromURL(model);
-                return JSON(rez.Item1, rez.Item2, rez.Item3);
-            }
-            else
-            {
-                return JSON("", 400, GetErrorsKeys());
-            }
+            return await Upload<UploadImageURLModel>(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UploadImageFromMap([FromBody] UploadImageMapModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var rez = await _mainControllerService.UploadImageFromMaps (model);
-                 return JSON(rez.Item1, rez.Item2, rez.Item3);
-            }
-            else
-            {
-                return JSON("", 400, GetErrorsKeys());
-            }
+            return await Upload<UploadImageMapModel>(model);
         }
     }
 }

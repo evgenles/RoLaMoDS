@@ -1,3 +1,5 @@
+using RoLaMoDS.Models.Enums;
+
 namespace RoLaMoDS.Services.Interfaces
 {
     public interface IFileService

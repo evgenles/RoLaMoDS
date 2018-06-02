@@ -1,4 +1,4 @@
-namespace RoLaMoDS.Services
+namespace RoLaMoDS.Models.Enums
 {
     /// <summary>
     /// Directory types for saving images

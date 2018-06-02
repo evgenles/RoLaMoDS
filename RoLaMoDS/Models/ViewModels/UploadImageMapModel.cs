@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using RoLaMoDS.Models.Enums;
 
-namespace RoLaMoDS.Models
+namespace RoLaMoDS.Models.ViewModels
 {
     public class UploadImageMapModel:UploadImageModel
     {
