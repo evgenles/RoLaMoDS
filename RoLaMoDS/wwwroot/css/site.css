@@ -152,8 +152,17 @@ a.NonUnderline, a.NoneUnderline:visited{
     font-family: Arial, Helvetica, sans-serif;
     transition: margin 0.5s; 
 }
+.LeftTabs>a.End{
+    bottom: calc(10% + 20px);
+    position: absolute;
+    clip-path: polygon(100% 0%, 20% 0%, 0% 50%, 20% 100%,100% 100%);
+    margin: 0 0 2px 10%;
+}
 .LeftTabs>a:hover{
     margin: 0 0 2px 10%;
+}
+.LeftTabs>a.End:hover{
+    margin: 0 0 2px 0;
 }
 .LeftTabs>a>span{
     position: relative;
@@ -163,7 +172,10 @@ a.NonUnderline, a.NoneUnderline:visited{
     transform: translate(-50%, -50%);
 }
 
-.ContentTab:target~.LeftTabs, .ContentTab:target~#ImageList{
+.ContentTab.Images:target~.LeftTabs.Images, 
+.ContentTab.Images:target~#ImageList,
+.ContentTab#SelectImage~#ImageList,
+.ContentTab.MainPage:target~.LeftTabs.MainPage{
     display: block;
 }
 .ContentTab{
@@ -177,7 +189,6 @@ a.NonUnderline, a.NoneUnderline:visited{
     position: relative;
     margin: 1em 1em;
 }
-
 .Form-Field{
     width: 100%;
     outline: none;
@@ -309,7 +320,7 @@ select.Form-Field ~ .Form-Label
     display: block !important;
 }
 
-.RightBottomPage > img{
+.RightBottomPage > img, .RightBottomPage > canvas{
     position: relative;
     max-width: 95%;
     max-height: 90vh;
@@ -320,7 +331,10 @@ select.Form-Field ~ .Form-Label
     transform: translateX(-50%);
     display: none;
 }
-
+.RightBottomPage > canvas{
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
 .RightBottomPage > button{
     position: absolute;
     height: 30px;
@@ -377,3 +391,65 @@ select.Form-Field ~ .Form-Label
     left: 50%;
     transform: translate(-50%,-50%);
 }
+
+.RangeGrad {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    margin-top: 10px;
+  }
+  
+  
+  .RangeGrad:focus {
+    outline: none;
+  }
+  
+  .RangeGrad::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    background: linear-gradient(45deg, white, black);
+    height: 2px;
+  }
+  .InverseGrad::-webkit-slider-runnable-track{
+    background: linear-gradient(45deg, black, white);
+  }
+  .InverseGrad::-moz-range-track{
+    background: linear-gradient(45deg, black, white);
+  }
+  
+  .RangeGrad::-moz-range-track {
+    -moz-appearance: none;
+    background: linear-gradient(45deg, white, black);
+    height: 2px;
+  }
+  
+  .RangeGrad::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    border: 2px solid;
+    border-radius: 50%;
+    height: 1.5em;
+    width: 1.5em;
+    bottom: 0.75em;
+    max-width: 80px;
+    position: relative;
+    background-color: #110666;
+    cursor: -webkit-grab;
+    border-color: rgb(59,173,227);
+  }
+  .RangeGrad::-moz-range-thumb  {
+    -moz-appearance: none;
+    border: 2px solid;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    max-width: 80px;
+    position: relative;
+    bottom: 11px;
+    background-color: #1d1c25;
+    cursor: -moz-grab;
+    -moz-transition: border 1000ms ease;
+    transition: border 1000ms ease;
+    border-color: rgb(59,173,227);
+  }
+  
+
+  
+  

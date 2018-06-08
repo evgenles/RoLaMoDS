@@ -33,7 +33,6 @@ namespace RoLaMoDS.Controllers
 
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
         {
             if (ModelState.IsValid)

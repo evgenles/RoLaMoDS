@@ -19,7 +19,7 @@
     return fdata;
 }
 
-function toJSONData(form){
+function toJSONData(form) {
     var data = {};
     var elements = form.querySelectorAll("input, select, textarea");
     for (var i = 0; i < elements.length; ++i) {
@@ -28,8 +28,8 @@ function toJSONData(form){
         var name = element.name;
         var value = element.value;
 
-        if (name) 
-            if(element.type=="checkbox"||element.type=="radio")
+        if (name)
+            if (element.type == "checkbox" || element.type == "radio")
                 data[name] = element.checked;
             else
                 data[name] = value;
@@ -47,9 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var formFile = document.getElementById("ImageFromLocal").querySelector("form");
     var formURL = document.getElementById("ImageFromURL").querySelector("form");
     var formMap = document.getElementById("ImageFromMaps").querySelector("form");
-
     var imgList = document.getElementById("ImageList");
-
     document.getElementById("ImagePrevLeft").addEventListener("click", () => {
         images = imgList.querySelectorAll("img");
         for (var i = 0; i < images.length; i++) {
@@ -71,15 +69,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+    function makeFilter(contrast,brightness) {
+        imgList.getElementsByClassName("ActiveImage")[0].style.filter = "contrast(" + contrast + "%) brightness(" + brightness + "%)";
+    }
 
-    function insertActiveImageFromJSON(json){
+    function insertActiveImageFromJSON(json) {
         var imgel = document.createElement("img");
         imgel.setAttribute("src", json.data.resultImagePath);
         imgel.classList.add("ActiveImage");
-        for(var i = 0; i<imgList.children.length;i++){
+        for (var i = 0; i < imgList.children.length; i++) {
             imgList.children[i].classList.remove("ActiveImage");
         }
-        imgList.insertAdjacentElement("afterbegin",imgel);
+        imgList.insertAdjacentElement("afterbegin", imgel);
     }
 
     formFile.addEventListener("submit", (e) => {
@@ -102,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             body: toJSONData(formURL),
             credentials: 'same-origin',
             headers: {
-             'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
             .then((json) => {
@@ -118,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             body: toJSONData(formMap),
             credentials: 'same-origin',
             headers: {
-             'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
             .then((json) => {
@@ -128,36 +129,76 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     var signInForm = document.getElementById("SignIn").querySelector("form");
-    signInForm.addEventListener("submit", (e)=>{
+    signInForm.addEventListener("submit", (e) => {
         e.preventDefault();
         fetch("/User/SignIn", {
             method: "POST",
             body: toJSONData(signInForm),
             credentials: 'same-origin',
             headers: {
-             'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
-        .then((json) => {
-            json = JSON.parse(json);
-            console.log(json);
-        });
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+            });
     });
 
     var signUpForm = document.getElementById("SignUp").querySelector("form");
-    signUpForm.addEventListener("submit", (e)=>{
+    signUpForm.addEventListener("submit", (e) => {
         e.preventDefault();
         fetch("/User/Register", {
             method: "POST",
             body: toJSONData(signUpForm),
             credentials: 'same-origin',
             headers: {
-             'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
-        .then((json) => {
-            json = JSON.parse(json);
-            console.log(json);
-        });
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+            });
+    });
+    var BrightnessSelector = document.getElementById("BrightnessSelector");
+    var ContrastSelector = document.getElementById("ContrastSelector");
+    BrightnessSelector.addEventListener("input", e => {
+        makeFilter(ContrastSelector.value,BrightnessSelector.value);
+    });
+    ContrastSelector.addEventListener("input", e => {       
+         makeFilter(ContrastSelector.value,BrightnessSelector.value);
+
+    });
+    BrightnessSelector.addEventListener("change", e => {
+        makeFilter(ContrastSelector.value,BrightnessSelector.value);
+    });
+    ContrastSelector.addEventListener("change", e => {       
+         makeFilter(ContrastSelector.value,BrightnessSelector.value);
+
+    });
+    var ScaleSelector = document.getElementById("ImageFromLocal").getElementsByClassName("RangeGrad")[0];
+    var imgCanvas = document.getElementById('ImageCanvas').getElementsByTagName("canvas")[0];
+    var ctx = imgCanvas.getContext('2d');
+    ScaleSelector.addEventListener("input", e => {
+        ctx.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+        imgCanvas.style.backgroundImage = "url("+imgList.getElementsByClassName("ActiveImage")[0].src+") ";
+
+        imgList.style.display="none";
+        imgCanvas.style.display="block";
+        document.getElementById('ImageCanvas').style.display="block";
+      
+        ceilCount = Math.round(ScaleSelector.value / 5);
+        var cellWidth = imgCanvas.width / ceilCount;
+        var cellHeight = imgCanvas.height / ceilCount;
+        ctx.beginPath();    
+        for (var i = 0; i<ceilCount;i++){
+            ctx.moveTo(i*cellWidth, 0); 
+            ctx.lineTo(i*cellWidth, imgCanvas.height); 
+        
+            ctx.moveTo(0, i*cellHeight); 
+            ctx.lineTo(imgCanvas.width, i*cellHeight);
+        }
+       ctx.stroke();
     });
 });
