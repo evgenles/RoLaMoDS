@@ -48,6 +48,7 @@ namespace RoLaMoDS
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+<<<<<<< HEAD
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opt =>
                 {
@@ -57,11 +58,21 @@ namespace RoLaMoDS
                             return Task.CompletedTask;
                         };
                 });
+=======
+            services.AddAuthentication("CookieAuth" )
+                .AddCookie("CookieAuth")
+                .AddGoogle("GoogleAuth", googleOptions =>
+            {
+                googleOptions.ClientId = Configuration["Google:Authentication:Client_Id"];
+                googleOptions.ClientSecret = Configuration["Google:Authentication:Client_Secret"];
+            });
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
             services.AddTransient<IImageWorkerService, ImageWorkerService>();
             services.AddTransient<IMainControllerService, MainControllerSevice>();
             services.AddSingleton<IImageValidator, ImageValidator>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -77,12 +88,12 @@ namespace RoLaMoDS
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             fileService.CreateImagePathes();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

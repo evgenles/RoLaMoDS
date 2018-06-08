@@ -156,11 +156,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
-            .then((json) => {
-                json = JSON.parse(json);
-                console.log(json);
-            });
+        .then((json) => {
+            json = JSON.parse(json);
+            console.log(json);
+        });
     });
+    var oAuthRegisterForm = document.getElementById("OAuthRegister").querySelector("form");
+    oAuthRegisterForm.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        fetch("/User/OAuthRegister", {
+            method: "POST",
+            body: toJSONData(oAuthRegisterForm),
+            credentials: 'same-origin',
+            headers: {
+             'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((json) => {
+            json = JSON.parse(json);
+            console.log(json);
+        });
+    });
+
     var BrightnessSelector = document.getElementById("BrightnessSelector");
     var ContrastSelector = document.getElementById("ContrastSelector");
     BrightnessSelector.addEventListener("input", e => {

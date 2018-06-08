@@ -39,7 +39,11 @@ namespace RoLaMoDS.Services
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>Task of (result, state, message)</returns>
+<<<<<<< HEAD
         public async Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model)
+=======
+        public async Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model, Guid UserId)
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
         {
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
 
@@ -47,7 +51,11 @@ namespace RoLaMoDS.Services
             {
                 img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
                 string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
+<<<<<<< HEAD
                 _applicationDBContext.Images.Add(new ImageDBModel
+=======
+                ImageDBModel image = new ImageDBModel
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 {
                     Cells = null,
                     Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
@@ -57,7 +65,16 @@ namespace RoLaMoDS.Services
                     Latitude = model.Latitude,
                     Scale = model.Scale,
                     URL = retUrl
+<<<<<<< HEAD
                 });
+=======
+                };
+                if (UserId == Guid.Empty)
+                    _applicationDBContext.Images.Add(image);
+                else
+                    _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
+
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 await _applicationDBContext.SaveChangesAsync();
                 return (new
                 {
@@ -72,7 +89,7 @@ namespace RoLaMoDS.Services
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        public async Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model)
+        public async Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model, Guid UserId)
         {
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
             using (var client = new HttpClient())
@@ -86,10 +103,28 @@ namespace RoLaMoDS.Services
                             if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
                             {
                                 img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
-                                //TODO: DB
+
+                                string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
+                                ImageDBModel image = new ImageDBModel
+                                {
+                                    Cells = null,
+                                    Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
+                                        DateTime.Now + TimeSpan.FromDays(30),
+                                    IsPreview = model.IsPreview,
+                                    Longitude = model.Longitude,
+                                    Latitude = model.Latitude,
+                                    Scale = model.Scale,
+                                    URL = retUrl
+                                };
+                                if (UserId == Guid.Empty)
+                                    _applicationDBContext.Images.Add(image);
+                                else
+                                    _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
+
+                                await _applicationDBContext.SaveChangesAsync();
                                 return (new
                                 {
-                                    resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                                    resultImagePath = retUrl
                                 }, 200, "");
                             }
                             return ("", 400, "File_Not_Image");
@@ -109,7 +144,7 @@ namespace RoLaMoDS.Services
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-        public async Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model)
+        public async Task<(object, int, string)> UploadImageFromMaps(UploadImageMapModel model, Guid UserId)
         {
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
             var key = "";
@@ -152,10 +187,27 @@ namespace RoLaMoDS.Services
                                     return ("", 400, "Image_So_Zommed");
                                 }
                                 img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
-                                //TODO: DB
+                                string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
+                                ImageDBModel image = new ImageDBModel
+                                {
+                                    Cells = null,
+                                    Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
+                                        DateTime.Now + TimeSpan.FromDays(30),
+                                    IsPreview = model.IsPreview,
+                                    Longitude = model.Longitude,
+                                    Latitude = model.Latitude,
+                                    Scale = model.Scale,
+                                    URL = retUrl
+                                };
+                                if (UserId == Guid.Empty)
+                                    _applicationDBContext.Images.Add(image);
+                                else
+                                    _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
+
+                                await _applicationDBContext.SaveChangesAsync();
                                 return (new
                                 {
-                                    resultImagePath = filePath.Remove(0, filePath.LastIndexOf("\\images\\"))
+                                    resultImagePath = retUrl
                                 }, 200, "");
                             }
                             return ("", 400, "File_Not_Image");

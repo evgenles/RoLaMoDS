@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using RoLaMoDS.Models.Enums;
 using RoLaMoDS.Services.Interfaces;
 using System.IO;
 

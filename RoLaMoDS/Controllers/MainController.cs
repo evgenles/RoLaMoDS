@@ -12,14 +12,20 @@ using RoLaMoDS.Models;
 using RoLaMoDS.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Identity;
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
 namespace RoLaMoDS.Controllers
 {
     public class MainController : ApiController
     {
         private readonly IMainControllerService _mainControllerService;
-
-        public MainController(IMainControllerService mainControllerService)
+        public MainController(IMainControllerService mainControllerService,
+                           UserManager<UserModel> userManager,
+                           SignInManager<UserModel> signInManager):
+                           base(userManager, signInManager)
         {
             _mainControllerService = mainControllerService;
         }
@@ -28,8 +34,8 @@ namespace RoLaMoDS.Controllers
         public IActionResult Index()
         {
             return View();
-
         }
+<<<<<<< HEAD
 
 
         [HttpPost]
@@ -39,40 +45,51 @@ namespace RoLaMoDS.Controllers
             {
                 //User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var rez = await _mainControllerService.UploadImageFromFile(model);
+=======
+        private async Task<IActionResult> Upload<T>(T model) where T : UploadImageModel
+        {
+            if (ModelState.IsValid)
+            {
+                Guid userid = GetUserId();                
+                (object, int, string) rez = ("", 200, "");
+                if (model is UploadImageFileModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromFile(model as UploadImageFileModel, userid);
+                }
+                else if (model is UploadImageURLModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromURL(model as UploadImageURLModel, userid);
+                }
+                else if (model is UploadImageMapModel)
+                {
+                    rez = await _mainControllerService.UploadImageFromMaps(model as UploadImageMapModel, userid);
+                }
+>>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else
             {
                 return JSON("", 400, GetErrorsKeys());
             }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
+        {
+            return await Upload<UploadImageFileModel>(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UploadImageFromURL([FromBody] UploadImageURLModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var rez = await _mainControllerService.UploadImageFromURL(model);
-                return JSON(rez.Item1, rez.Item2, rez.Item3);
-            }
-            else
-            {
-                return JSON("", 400, GetErrorsKeys());
-            }
+            return await Upload<UploadImageURLModel>(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UploadImageFromMap([FromBody] UploadImageMapModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var rez = await _mainControllerService.UploadImageFromMaps (model);
-                 return JSON(rez.Item1, rez.Item2, rez.Item3);
-            }
-            else
-            {
-                return JSON("", 400, GetErrorsKeys());
-            }
+            return await Upload<UploadImageMapModel>(model);
         }
     }
 }
