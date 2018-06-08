@@ -15,13 +15,10 @@ namespace RoLaMoDS.Data
 
         protected override void OnModelCreating(ModelBuilder builder){
             base.OnModelCreating(builder);
-<<<<<<< HEAD
-=======
             builder.Entity<UserModel>()
                 .HasMany(user=>user.DownloadedImages)
                 .WithOne(image=>image.User)
                 .HasForeignKey(image=>image.UserId);
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
         }
     }
 }

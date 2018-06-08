@@ -14,11 +14,7 @@ namespace RoLaMoDS.Services.Interfaces
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>(result, state, message)</returns>
-<<<<<<< HEAD
-        Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model);
-=======
         Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model, Guid userId);
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
         /// <summary>
         /// Upload image from URL with longitude, lantitude and scale

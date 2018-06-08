@@ -5,15 +5,12 @@ using RoLaMoDS.Models.UserViewModels;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using RoLaMoDS.Models;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using RoLaMoDS.Models.ViewModels;
 using System;
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
 namespace RoLaMoDS.Controllers
 {
@@ -22,14 +19,6 @@ namespace RoLaMoDS.Controllers
         private readonly ApplicationDBContext _applicationDBContext;
         private readonly UserManager<UserModel> _userManager;
         private readonly SignInManager<UserModel> _signInManager;
-<<<<<<< HEAD
-
-        public UserController(ApplicationDBContext applicationDBContext, UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
-        {
-            _applicationDBContext = applicationDBContext;
-            _userManager = userManager;
-            _signInManager = signInManager;
-=======
         private readonly ILogger _logger;
 
         public UserController(ApplicationDBContext applicationDBContext,
@@ -42,7 +31,6 @@ namespace RoLaMoDS.Controllers
 
             _signInManager = signInManager;
             _logger = logger;
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
         }
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
@@ -70,25 +58,13 @@ namespace RoLaMoDS.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Login,
                    model.Password, model.RememberMe, false);
-<<<<<<< HEAD
-
-=======
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 if (result.Succeeded)
                 {
                     return JSON(model.Login);
                 }
                 //TODO: SignInError
             }
-<<<<<<< HEAD
-            return JSON(null,400,"");
-=======
             return JSON(null, 400, "");
-        }
-
-        public IActionResult Lol()
-        {
-            return Ok();
         }
 
         public IActionResult Index()
@@ -166,7 +142,6 @@ namespace RoLaMoDS.Controllers
                 //ToDO: Errors
             }
             return JSON("",400,"Has errors");
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
         }
     }
 }

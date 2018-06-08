@@ -12,10 +12,7 @@ using RoLaMoDS.Models;
 using RoLaMoDS.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Identity;
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
 namespace RoLaMoDS.Controllers
 {
@@ -35,17 +32,6 @@ namespace RoLaMoDS.Controllers
         {
             return View();
         }
-<<<<<<< HEAD
-
-
-        [HttpPost]
-        public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                //User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var rez = await _mainControllerService.UploadImageFromFile(model);
-=======
         private async Task<IActionResult> Upload<T>(T model) where T : UploadImageModel
         {
             if (ModelState.IsValid)
@@ -64,7 +50,6 @@ namespace RoLaMoDS.Controllers
                 {
                     rez = await _mainControllerService.UploadImageFromMaps(model as UploadImageMapModel, userid);
                 }
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 return JSON(rez.Item1, rez.Item2, rez.Item3);
             }
             else

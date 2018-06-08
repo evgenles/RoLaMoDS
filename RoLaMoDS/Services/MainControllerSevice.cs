@@ -39,11 +39,7 @@ namespace RoLaMoDS.Services
         /// </summary>
         /// <param name="model">Model to upload</param>
         /// <returns>Task of (result, state, message)</returns>
-<<<<<<< HEAD
-        public async Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model)
-=======
         public async Task<(object, int, string)> UploadImageFromFile(UploadImageFileModel model, Guid UserId)
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
         {
             var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
 
@@ -51,11 +47,7 @@ namespace RoLaMoDS.Services
             {
                 img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
                 string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
-<<<<<<< HEAD
-                _applicationDBContext.Images.Add(new ImageDBModel
-=======
                 ImageDBModel image = new ImageDBModel
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 {
                     Cells = null,
                     Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
@@ -65,16 +57,12 @@ namespace RoLaMoDS.Services
                     Latitude = model.Latitude,
                     Scale = model.Scale,
                     URL = retUrl
-<<<<<<< HEAD
-                });
-=======
                 };
                 if (UserId == Guid.Empty)
                     _applicationDBContext.Images.Add(image);
                 else
                     _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
 
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
                 await _applicationDBContext.SaveChangesAsync();
                 return (new
                 {

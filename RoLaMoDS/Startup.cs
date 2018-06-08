@@ -48,17 +48,6 @@ namespace RoLaMoDS
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-<<<<<<< HEAD
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(opt =>
-                {
-                    opt.Events.OnRedirectToLogin = (context) =>
-                        {
-                            context.Response.StatusCode = 401;
-                            return Task.CompletedTask;
-                        };
-                });
-=======
             services.AddAuthentication("CookieAuth" )
                 .AddCookie("CookieAuth")
                 .AddGoogle("GoogleAuth", googleOptions =>
@@ -66,7 +55,6 @@ namespace RoLaMoDS
                 googleOptions.ClientId = Configuration["Google:Authentication:Client_Id"];
                 googleOptions.ClientSecret = Configuration["Google:Authentication:Client_Secret"];
             });
->>>>>>> 9d198b4b1633309de920499864efac7e3f9b23a2
 
             services.AddTransient<IImageWorkerService, ImageWorkerService>();
             services.AddTransient<IMainControllerService, MainControllerSevice>();
