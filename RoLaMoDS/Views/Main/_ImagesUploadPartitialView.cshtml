@@ -1,30 +1,16 @@
      <div id = "ImageFromURL" class="TargetPage ContentTab Images">
         <form>
             <div class="LineContent">
-
-                 <div class="Form-Input">
-                    <input class="Form-Field" name="Latitude" type="number" min="-90" max="90" placeholder="Широта">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Широта</label>
-                </div>
-                  <div class="Form-Input">
-                    <input class="Form-Field" name="Longitude"  type="number" min="-180" max="180" placeholder="Долгота">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Долгота</label>
-                </div>
-                <div class="Form-Input">
-                    <input class="Form-Field" name="Scale" type="number" min="5" max="50"  placeholder="Масштаб">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Масштаб</label>
-                </div>
+                <span class="CenterText">Загрузка изображения по ссылке. Пожалуйста, указывайте ссылки на изображения формата jpg, png, bmp.</span>
             </div>
             <div class="LineContent">
                 <div class="Form-Input">
-                        <input class="Form-Field" name="URL" type="text" placeholder="Image URL">
+                        <input class="Form-Field" name="URL" type="text" placeholder="Image URL" required>
                         <div class="Form-Input-Bar"></div>
                         <label class="Form-Label">Image URL</label>
                 </div>
-                    <input class="Form-Button" type="submit" value="Загрузить" />
+                    <input type="hidden" name="IsPreview" value="True"/>
+                    <input class="Form-Button" type="submit" value="Предпросмотр" />
             </div>
         </form>
      </div>
@@ -32,25 +18,23 @@
     <div id = "ImageFromMaps" class="TargetPage ContentTab Images">
         <form>
              <div class="LineContent">
+                <span class="CenterText">Загрузка снимка с онлайн карт. Укажите пожалуйста широту, долготу точки и кратность приближения со спутника.</span>
+            </div>
+             <div class="LineContent">
                 <div class="Form-Input">
-                    <input class="Form-Field" name="Latitude" type="number" step="0.000001" min="-90" max="90" placeholder="Широта">
+                    <input class="Form-Field" name="Latitude" type="number" step="0.000001" min="-90" max="90" placeholder="Широта" required>
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Широта</label>
                 </div>
                   <div class="Form-Input">
-                    <input class="Form-Field" name="Longitude"  type="number" step="0.000001"min="-180" max="180" placeholder="Долгота">
+                    <input class="Form-Field" name="Longitude"  type="number" step="0.000001"min="-180" max="180" placeholder="Долгота" required>
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Долгота</label>
-                </div>
-                <div class="Form-Input">
-                    <input class="Form-Field" name="Scale" type="number" min="5" max="50"  placeholder="Масштаб">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Масштаб</label>
                 </div>
             </div>
             <div class="LineContent">
                  <div class="Form-Input">
-                     <select class="Form-Field" name="MapType">
+                     <select class="Form-Field" name="MapType" required>
                          <option label ="Bing" value="1" selected/>
                          <option label="Google" value="2" />
                      </select>
@@ -59,12 +43,14 @@
                 </div>
                 <div class="Form-Input">
                     <input class="Form-Field" name="Zoom" type="number" min="1" max="23" placeholder="Увеличение" 
-                    title="1 - весь мир, 20 - дома. Для Украины максимум 19"
+                    title="1 - весь мир, 20 - дома. Для Украины максимум 19" required
                     >
                     <div class="Form-Input-Bar"></div>
                     <label class="Form-Label">Увеличение</label>
                 </div>
-                    <input class="Form-Button" type="submit" value="Загрузить" />
+                    <input class="Form-Button" type="submit" value="Предпросмотр" />
+                    <input type="hidden" name="IsPreview" value="True"/>
+
             </div>
 
         </form>
@@ -72,32 +58,13 @@
     <div id = "ImageFromLocal" class="TargetPage ContentTab Images">
         <form>
             <div class="LineContent">
-
-                 <div class="Form-Input">
-                    <input class="Form-Field" name="Latitude" type="number" min="-90" max="90" placeholder="Широта">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Широта</label>
-                </div>
-                  <div class="Form-Input">
-                    <input class="Form-Field" name="Longitude"  type="number" min="-180" max="180" placeholder="Долгота">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Долгота</label>
-                </div>
-                <div class="Form-Input">
-                    <input class="Form-Field" name="Scale" type="number" min="5" max="50"  placeholder="Масштаб">
-                    <div class="Form-Input-Bar"></div>
-                    <label class="Form-Label">Масштаб</label>
-                </div>
-                             <div class="Form-Input">
-                             <input type="range" min="5" max="50" value="20" class="Form-Field RangeGrad InverseGrad"/>
-                            <label class="Form-Label">Выберите масштаб </label> 
-                     </div>
+                <span class="CenterText">Загрузка изображения с компьютера. Выберите пожалуйста файл изображения.</span>
             </div>
             <div class="LineContent">
                 <div>
                 
                     <input id ="Image-Upload-Input" class="Form-Field" type="file" name="File" 
-                     accept="image/*"/>
+                     accept="image/*" required />
                     <label for="Image-Upload-Input">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 17">
                             <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z">
@@ -107,26 +74,57 @@
                 </label>
                     
                 </div>
-                    <input class="Form-Button" type="submit" value="Загрузить" />
+                    <input type="hidden" name="IsPreview" value="True"/>
+                    <input class="Form-Button" type="submit" value="Предпросмотр" />
             </div>
         </form>
     </div>
-
+    <div id="PreloadImage" class="TargetPage ContentTab Images">
+        <form>
+            <input type="hidden" name="URL"/>
+                    <input type="hidden" name="IsPreview" value="False"/>
+            <div class="LineContent">
+                <span class="CenterText">Предпросмотр изображения. Укажите пожалуйста широту и долготу карты\снимка, а так же выберите масштаб изображения чтобы в 1 клетке было как можно меньше обьектов.</span>
+            </div>
+            <div class="LineContent">
+                    <div class="Form-Input">
+                        <input class="Form-Field" name="Latitude" type="number" min="-90" max="90" placeholder="Широта">
+                        <div class="Form-Input-Bar"></div>
+                        <label class="Form-Label">Широта</label>
+                    </div>
+                    <div class="Form-Input">
+                        <input class="Form-Field" name="Longitude"  type="number" min="-180" max="180" placeholder="Долгота">
+                        <div class="Form-Input-Bar"></div>
+                        <label class="Form-Label">Долгота</label>
+                    </div>
+                    <div class="Form-Input">
+                        <input class="Form-Field" name="Scale" type="number" min="5" max="50"  placeholder="Масштаб">
+                        <div class="Form-Input-Bar"></div>
+                        <label class="Form-Label">Масштаб</label>
+                    </div>
+                    <div class="Form-Input">
+                            <input type="range" min="5" max="50" value="20" class="Form-Field RangeGrad InverseGrad"/>
+                            <label class="Form-Label">Выберите масштаб </label> 
+                    </div>
+                </div>
+                <div class="LineContent">
+                    <div>
+                        <input class="Form-Button" type="submit" value="Загрузить" />
+                    </div>
+                </div>
+            </form>
+    </div>
     <div class="LeftTabs Images">
             <a href="#ImageFromLocal" class="NonUnderline White"><span>С локального ПК</span></a>
             <a href="#ImageFromURL" class="NonUnderline White"><span>По ссылке</span></a>
             <a href="#ImageFromMaps" class="NonUnderline White"><span>Из онлайн карт</span></a>
-            <a href="/" class="NonUnderline White End"><span>Назад</span></a>
+            <a href="#SelectImage" class="NonUnderline White End"><span>Назад</span></a>
     </div>
     <div id = "ImageCanvas"  class="RightBottomPage">
-        <canvas >
-
-        </canvas>
+        <canvas ></canvas>
     </div>
     <div id="ImageList" class="RightBottomPage">
         <img class="ActiveImage" src="/Capture.png" />
-        
         <button id="ImagePrevLeft" ><</button>
         <button id="ImageNextRight" >></button>
-        <!-- <button id="RecognizeImage"class="Form-Button">Распознать</button> -->
     </div>

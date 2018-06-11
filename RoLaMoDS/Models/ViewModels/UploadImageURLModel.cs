@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using RoLaMoDS.Attributes;
 
 namespace RoLaMoDS.Models.ViewModels
 {
     public class UploadImageURLModel:UploadImageModel
     {
         [Required]
-        [Url]
         public string URL { get; set; }
     }
 }

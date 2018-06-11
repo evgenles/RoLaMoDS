@@ -50,12 +50,11 @@ namespace RoLaMoDS.Services
                 ImageDBModel image = new ImageDBModel
                 {
                     Cells = null,
-                    Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
-                        DateTime.Now + TimeSpan.FromDays(30),
+                    Expires = DateTime.Now + TimeSpan.FromDays(1),
                     IsPreview = model.IsPreview,
-                    Longitude = model.Longitude,
-                    Latitude = model.Latitude,
-                    Scale = model.Scale,
+                    Longitude = -1,
+                    Latitude = -1,
+                    Scale = -1,
                     URL = retUrl
                 };
                 if (UserId == Guid.Empty)
@@ -79,49 +78,73 @@ namespace RoLaMoDS.Services
         /// <returns>(result, state, message)</returns>
         public async Task<(object, int, string)> UploadImageFromURL(UploadImageURLModel model, Guid UserId)
         {
-            var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
-            using (var client = new HttpClient())
+            if (!model.IsPreview)
             {
-                try
+                ImageDBModel image = _applicationDBContext.Images.SingleOrDefault(img => img.URL == model.URL);
+                if (image != null)
                 {
-                    using (var result = await client.GetAsync(model.URL))
+                    image.Expires = DateTime.Now+TimeSpan.FromDays(30);
+                    image.Latitude = model.Latitude;
+                    image.IsPreview = false;
+                    image.Longitude = model.Longitude;
+                    image.Scale = model.Scale;
+                    await _applicationDBContext.SaveChangesAsync();
+
+                    return (new
                     {
-                        if (result.IsSuccessStatusCode)
+                        resultImagePath = model.URL
+                    }, 200, "");
+                }
+                else
+                {
+                    //TODO: errors
+                }
+            }
+            else
+            {
+                var filePath = _fileService.GetNextFilesPath(1, DirectoryType.Upload)[0];
+                using (var client = new HttpClient())
+                {
+                    try
+                    {
+                        using (var result = await client.GetAsync(model.URL))
                         {
-                            if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
+                            if (result.IsSuccessStatusCode)
                             {
-                                img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
-
-                                string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
-                                ImageDBModel image = new ImageDBModel
+                                if ((await result.Content.ReadAsStreamAsync()).TryConvertToImage(out Image img))
                                 {
-                                    Cells = null,
-                                    Expires = model.IsPreview ? DateTime.Now + TimeSpan.FromDays(1) :
-                                        DateTime.Now + TimeSpan.FromDays(30),
-                                    IsPreview = model.IsPreview,
-                                    Longitude = model.Longitude,
-                                    Latitude = model.Latitude,
-                                    Scale = model.Scale,
-                                    URL = retUrl
-                                };
-                                if (UserId == Guid.Empty)
-                                    _applicationDBContext.Images.Add(image);
-                                else
-                                    _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
+                                    img.Save(filePath, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                                await _applicationDBContext.SaveChangesAsync();
-                                return (new
-                                {
-                                    resultImagePath = retUrl
-                                }, 200, "");
+                                    string retUrl = filePath.Remove(0, filePath.LastIndexOf("\\images\\"));
+                                    ImageDBModel image = new ImageDBModel
+                                    {
+                                        Cells = null,
+                                        Expires = DateTime.Now + TimeSpan.FromDays(1),
+                                        IsPreview = model.IsPreview,
+                                        Longitude = -1,
+                                        Latitude = -1,
+                                        Scale = -1,
+                                        URL = retUrl
+                                    };
+                                    if (UserId == Guid.Empty)
+                                        _applicationDBContext.Images.Add(image);
+                                    else
+                                        _applicationDBContext.Users.Find(UserId).DownloadedImages.Add(image);
+
+                                    await _applicationDBContext.SaveChangesAsync();
+                                    return (new
+                                    {
+                                        resultImagePath = retUrl
+                                    }, 200, "");
+                                }
+                                return ("", 400, "File_Not_Image");
                             }
-                            return ("", 400, "File_Not_Image");
                         }
                     }
-                }
-                catch (HttpRequestException)
-                {
-                    return ("", 404, "Host_Not_found");
+                    catch (HttpRequestException)
+                    {
+                        return ("", 404, "Host_Not_found");
+                    }
                 }
             }
             return ("", 404, "Unavailable_URL");
@@ -184,7 +207,7 @@ namespace RoLaMoDS.Services
                                     IsPreview = model.IsPreview,
                                     Longitude = model.Longitude,
                                     Latitude = model.Latitude,
-                                    Scale = model.Scale,
+                                    Scale = -1,
                                     URL = retUrl
                                 };
                                 if (UserId == Guid.Empty)

@@ -1,46 +1,45 @@
-<div id="PageEnteringForm" class="TargetPage CenteredPage">
-            <a class="NonUnderline CenteredContainer Container300x200" href="#ImageFromLocal">
-                Загрузить изображения
-            </a>
+<a id="PageEnteringForm" class="NonUnderline CenteredContainer TargetPage" href="#ImageFromLocal">
+    Загрузить изображения
+</a>
+
+<div id ="SelectImage" class="TargetPage ContentTab MainPage">
+    <form>
+            <div class="LineContent">
+            <span class="CenterText">Выбор изображений. Выберите пожалуйста 1 снимок и 1 топографическую карту для распознавания, а так же настройте оптимальную яркость и контраст.</span>
+        </div>
+        <div class="LineContent">
+            <div class="Form-Input">
+                <select class="Form-Field" required>
+                    <option value="" disabled selected></option>
+                    <option value="1">Спутниковый снимок</option>
+                    <option value="2">Топографическая карта</option>
+                </select>         
+                <span class="Select-Highlight"></span>
+                <span class="Form-Input-Bar"></span>
+                <label class="Form-Label">Выберите клетку </label> 
+            </div>
+            <button class="Form-Button">Выбрать</button>
+        </div>
+        <div class="Form-Input">
+                    <input id="BrightnessSelector" type="range" min="0" max="200" value="100" class="Form-Field RangeGrad InverseGrad"/>
+                <label class="Form-Label">Выберите яркость </label> 
+            </div>
+            
+        <div class="Form-Input">
+                    <input id="ContrastSelector"type="range" min="0" max="200" value="100" class="Form-Field RangeGrad"/>
+                <label class="Form-Label">Выберите контраст </label> 
+            </div>
+        </form>
+</div>  
+
+@await Html.PartialAsync("_ModelingDSPartitialView")
+@await Html.PartialAsync("_TrainModelPartitialView")
+
+<div class="LeftTabs MainPage">
+<a href="#ImageFromLocal" class="NonUnderline White"><span>Загрузить изображения</span></a>
+<a href="#SelectImage" class="NonUnderline White"><span>Выбрать изображения</span></a>
+<a href="#SelectImage" class="NonUnderline White"><span>Распознать изображения</span></a>
+<a href="#ModelingDangerousSituation" class="NonUnderline White"><span>Смоделировать ситуацию</span></a>
+<a href="#TrainModel" class="NonUnderline White"><span>Тренировать модель</span></a>
 </div>
-
-<div class="FullPage">
-
-
-           <div id ="SelectImage" class="TargetPage ContentTab MainPage">
-                <form>
-                    <div class="LineContent">
-                        <div class="Form-Input">
-                            <select class="Form-Field" required>
-                                <option value="" disabled selected></option>
-                                <option value="1">Спутниковый снимок</option>
-                                <option value="2">Топографическая карта</option>
-                            </select>         
-                            <span class="Select-Highlight"></span>
-                            <span class="Form-Input-Bar"></span>
-                            <label class="Form-Label">Выберите клетку </label> 
-                        </div>
-                        <button class="Form-Button">Выбрать</button>
-                    </div>
-                    <div class="Form-Input">
-                             <input id="BrightnessSelector" type="range" min="0" max="200" value="100" class="Form-Field RangeGrad InverseGrad"/>
-                            <label class="Form-Label">Выберите яркость </label> 
-                     </div>
-                     
-                    <div class="Form-Input">
-                             <input id="ContrastSelector"type="range" min="0" max="200" value="100" class="Form-Field RangeGrad"/>
-                            <label class="Form-Label">Выберите контраст </label> 
-                     </div>
-                   </form>
-            </div>  
-
-           <div class="LeftTabs MainPage">
-            <a href="#ImageFromLocal" class="NonUnderline White"><span>Загрузить изображения</span></a>
-            <a href="#SelectImage" class="NonUnderline White"><span>Выбрать изображения</span></a>
-            <a href="#ImageFromLocal" class="NonUnderline White"><span>Распознать изображения</span></a>
-            <a href="#ImageFromLocal" class="NonUnderline White"><span>Смоделировать ситуацию</span></a>
-        
-    </div>
-       @await Html.PartialAsync("_ImagesUploadPartitialView")
-
-</div>
+@await Html.PartialAsync("_ImagesUploadPartitialView")

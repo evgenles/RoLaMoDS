@@ -69,20 +69,96 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-    function makeFilter(contrast,brightness) {
+    function makeFilter(contrast, brightness) {
         imgList.getElementsByClassName("ActiveImage")[0].style.filter = "contrast(" + contrast + "%) brightness(" + brightness + "%)";
     }
 
-    function insertActiveImageFromJSON(json) {
-        var imgel = document.createElement("img");
-        imgel.setAttribute("src", json.data.resultImagePath);
-        imgel.classList.add("ActiveImage");
-        for (var i = 0; i < imgList.children.length; i++) {
-            imgList.children[i].classList.remove("ActiveImage");
-        }
-        imgList.insertAdjacentElement("afterbegin", imgel);
-    }
+    var PreviewImage = document.getElementById("PreloadImage");
+    var PreviewImageForm = PreviewImage.getElementsByTagName("form")[0];
+    var ScaleSelector = PreviewImage.getElementsByClassName("RangeGrad")[0];
+    var imgCanvas = document.getElementById('ImageCanvas').getElementsByTagName("canvas")[0];
+    var ctx = imgCanvas.getContext('2d');
+    function makeGrid() {
+        ctx.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+        // imgCanvas.style.backgroundImage = "url("+imgList.getElementsByClassName("ActiveImage")[0].src+") ";
 
+        // imgList.style.display="none";
+        // imgCanvas.style.display="block";
+        // document.getElementById('ImageCanvas').style.display="block";
+
+        ceilCount = Math.round(ScaleSelector.value / 2.5);
+        var cellWidth = imgCanvas.width / ceilCount;
+        var cellHeight = imgCanvas.height / ceilCount;
+        ctx.beginPath();
+        for (var i = 0; i < ceilCount; i++) {
+            ctx.moveTo(i * cellWidth, 0);
+            ctx.lineTo(i * cellWidth, imgCanvas.height);
+
+            ctx.moveTo(0, i * cellHeight);
+            ctx.lineTo(imgCanvas.width, i * cellHeight);
+        }
+        ctx.stroke();
+    }
+    var ScaleInput = PreviewImage.querySelector("input[name='Scale']");
+    ScaleSelector.addEventListener("input", e => {
+        makeGrid();
+        ScaleInput.value = ScaleSelector.value;
+    });
+    ScaleSelector.addEventListener("change", e => {
+        makeGrid();
+        ScaleInput.value = ScaleSelector.value;
+    });
+    ScaleInput.addEventListener("input", e => {
+        ScaleSelector.value = ScaleInput.value;
+        makeGrid();
+    });
+    function insertActiveImageFromJSON(json) {
+        if (json.code == 200) {
+
+            location.href = "#PreloadImage";
+            ctx.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+            // var img = new Image();
+            // img.onload = function() {
+            //     ctx.drawImage(img, 0, 0);
+            //   };
+            // img.src =  encodeURI(json.data.resultImagePath);
+            //ctx.drawImage(img,100,100);
+            imgCanvas.style.backgroundImage = "url(" + encodeURI(json.data.resultImagePath) + ") ";
+
+            PreviewImageForm.querySelector("input[name='URL']").value = json.data.resultImagePath;
+            PreviewImageForm.querySelector("input[name='Longitude']").value = "";
+            PreviewImageForm.querySelector("input[name='Latitude']").value = "";
+            PreviewImageForm.querySelector("input[name='Scale']").value = "20";
+        }
+    }
+    PreviewImageForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("/Main/UploadImageFromURL", {
+            method: "POST",
+            body: toJSONData(PreviewImageForm),
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                if (json.code == 200) {
+                    var imgel = document.createElement("img");
+                    imgel.setAttribute("src", json.data.resultImagePath);
+                    imgel.classList.add("ActiveImage");
+                    for (var i = 0; i < imgList.children.length; i++) {
+                        imgList.children[i].classList.remove("ActiveImage");
+                    }
+                    imgList.insertAdjacentElement("afterbegin", imgel);
+                    location.href = "#ImageFromLocal";
+
+                }
+                else {
+                    //TODO: Error
+                }
+            });
+    });
     formFile.addEventListener("submit", (e) => {
         e.preventDefault();
         fetch("/Main/UploadImageFromFile", {
@@ -93,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((json) => {
                 json = JSON.parse(json);
                 insertActiveImageFromJSON(json);
+                formFile.querySelector("#Image-Upload-Input ~ label > span").innerHTML="Выбрать файл изображения";
             });
     });
 
@@ -125,6 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((json) => {
                 json = JSON.parse(json);
                 insertActiveImageFromJSON(json);
+                PreviewImageForm.querySelector("input[name='Longitude']").value = formMap.querySelector("input[name='Longitude']").value;
+                PreviewImageForm.querySelector("input[name='Latitude']").value = formMap.querySelector("input[name='Latitude']").value;
             });
     });
 
@@ -156,66 +235,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
-        .then((json) => {
-            json = JSON.parse(json);
-            console.log(json);
-        });
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+            });
     });
     var oAuthRegisterForm = document.getElementById("OAuthRegister").querySelector("form");
-    oAuthRegisterForm.addEventListener("submit", (e)=>{
+    oAuthRegisterForm.addEventListener("submit", (e) => {
         e.preventDefault();
         fetch("/User/OAuthRegister", {
             method: "POST",
             body: toJSONData(oAuthRegisterForm),
             credentials: 'same-origin',
             headers: {
-             'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }).then((response) => response.json())
-        .then((json) => {
-            json = JSON.parse(json);
-            console.log(json);
-        });
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+            });
     });
 
     var BrightnessSelector = document.getElementById("BrightnessSelector");
     var ContrastSelector = document.getElementById("ContrastSelector");
     BrightnessSelector.addEventListener("input", e => {
-        makeFilter(ContrastSelector.value,BrightnessSelector.value);
+        makeFilter(ContrastSelector.value, BrightnessSelector.value);
     });
-    ContrastSelector.addEventListener("input", e => {       
-         makeFilter(ContrastSelector.value,BrightnessSelector.value);
+    ContrastSelector.addEventListener("input", e => {
+        makeFilter(ContrastSelector.value, BrightnessSelector.value);
 
     });
     BrightnessSelector.addEventListener("change", e => {
-        makeFilter(ContrastSelector.value,BrightnessSelector.value);
+        makeFilter(ContrastSelector.value, BrightnessSelector.value);
     });
-    ContrastSelector.addEventListener("change", e => {       
-         makeFilter(ContrastSelector.value,BrightnessSelector.value);
+    ContrastSelector.addEventListener("change", e => {
+        makeFilter(ContrastSelector.value, BrightnessSelector.value);
 
     });
-    var ScaleSelector = document.getElementById("ImageFromLocal").getElementsByClassName("RangeGrad")[0];
-    var imgCanvas = document.getElementById('ImageCanvas').getElementsByTagName("canvas")[0];
-    var ctx = imgCanvas.getContext('2d');
-    ScaleSelector.addEventListener("input", e => {
-        ctx.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
-        imgCanvas.style.backgroundImage = "url("+imgList.getElementsByClassName("ActiveImage")[0].src+") ";
 
-        imgList.style.display="none";
-        imgCanvas.style.display="block";
-        document.getElementById('ImageCanvas').style.display="block";
-      
-        ceilCount = Math.round(ScaleSelector.value / 5);
-        var cellWidth = imgCanvas.width / ceilCount;
-        var cellHeight = imgCanvas.height / ceilCount;
-        ctx.beginPath();    
-        for (var i = 0; i<ceilCount;i++){
-            ctx.moveTo(i*cellWidth, 0); 
-            ctx.lineTo(i*cellWidth, imgCanvas.height); 
-        
-            ctx.moveTo(0, i*cellHeight); 
-            ctx.lineTo(imgCanvas.width, i*cellHeight);
-        }
-       ctx.stroke();
-    });
 });
