@@ -18,7 +18,7 @@
                 <span class="Form-Input-Bar"></span>
                 <label class="Form-Label">Выберите клетку </label> 
             </div>
-            <button class="Form-Button">Выбрать</button>
+            <button type="submit" class="Form-Button">Выбрать</button>
         </div>
         <div class="Form-Input">
                     <input id="BrightnessSelector" type="range" min="0" max="200" value="100" class="Form-Field RangeGrad InverseGrad"/>
@@ -34,12 +34,12 @@
 
 @await Html.PartialAsync("_ModelingDSPartitialView")
 @await Html.PartialAsync("_TrainModelPartitialView")
-
+@await Html.PartialAsync("_RecognizePartitialView")
 <div class="LeftTabs MainPage">
 <a href="#ImageFromLocal" class="NonUnderline White"><span>Загрузить изображения</span></a>
 <a href="#SelectImage" class="NonUnderline White"><span>Выбрать изображения</span></a>
-<a href="#SelectImage" class="NonUnderline White"><span>Распознать изображения</span></a>
+<a id="StartRecognizeButton" href="#RecognizePage" class="NonUnderline White"><span>Распознать изображения</span></a>
 <a href="#ModelingDangerousSituation" class="NonUnderline White"><span>Смоделировать ситуацию</span></a>
-<a href="#TrainModel" class="NonUnderline White"><span>Тренировать модель</span></a>
+<a id="TrainModelMenuButton" href="#TrainModel" class="NonUnderline White"><span>Тренировать модель</span></a>
 </div>
 @await Html.PartialAsync("_ImagesUploadPartitialView")

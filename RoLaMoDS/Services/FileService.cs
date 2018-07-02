@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using RoLaMoDS.Models.Enums;
 using RoLaMoDS.Services.Interfaces;
 using System.IO;
-
+using RoLaMoDS.Extention;
 namespace RoLaMoDS.Services
 {
     public class FileService : IFileService
@@ -40,6 +40,11 @@ namespace RoLaMoDS.Services
             {
                 Directory.CreateDirectory(recognizeDir);
             }
+            var modelsDir = Path.Combine(_env.ContentRootPath, "modelsNN");
+            if (!Directory.Exists(modelsDir))
+            {
+                Directory.CreateDirectory(modelsDir);
+            }
         }
 
         /// <summary>
@@ -50,30 +55,34 @@ namespace RoLaMoDS.Services
         /// <returns>File patches</returns>
         public string[] GetNextFilesPath(int CountFile, DirectoryType DType)
         {
-            var imgDir = Path.Combine(_env.WebRootPath, "images");
+            var workDir = Path.Combine(_env.WebRootPath, "images");
             switch (DType)
             {
                 case DirectoryType.Upload:
-                    imgDir = Path.Combine(imgDir, "uploads");
+                    workDir = Path.Combine(workDir, "uploads");
                     break;
                 case DirectoryType.Result:
-                    imgDir = Path.Combine(imgDir, "results");
+                    workDir = Path.Combine(workDir, "results");
                     break;
                 case DirectoryType.Recognize:
-                    imgDir = Path.Combine(imgDir, "recognize");
+                    workDir = Path.Combine(workDir, "recognize");
                     break;
+                case DirectoryType.Model:
+                    workDir = Path.Combine(_env.ContentRootPath, "modelsNN");
+                    break;
+
             }
-            var directories = Directory.GetDirectories(imgDir);
+            var directories = Directory.GetDirectories(workDir);
             string fileDirectory = null;
             if (directories.Length == 0)
             {
-                fileDirectory = Directory.CreateDirectory(Path.Combine(imgDir, "1")).FullName;
+                fileDirectory = Directory.CreateDirectory(Path.Combine(workDir, "1")).FullName;
             }
             else
             {
                 foreach (string directory in directories)
                 {
-                    var fullName = Path.Combine(imgDir, directory);
+                    var fullName = Path.Combine(workDir, directory);
                     if (Directory.GetFiles(fullName).Length < ushort.MaxValue - CountFile)
                     {
                         fileDirectory = fullName;
@@ -82,15 +91,16 @@ namespace RoLaMoDS.Services
                 }
                 if (fileDirectory == null)
                 {
-                    fileDirectory = Directory.CreateDirectory(Path.Combine(imgDir,
+                    fileDirectory = Directory.CreateDirectory(Path.Combine(workDir,
                         (System.Convert.ToUInt16(directories[directories.Length - 1]
-                            .Remove(0, directories[directories.Length - 1].LastIndexOf("\\uploads\\")+9)) + 1)
-                            .ToString())).FullName;
+                            .Remove(0, directories[directories.Length - 1]
+                            .LastIndexOf($"\\{DType.GetPathString()}\\") + 9) + 1)
+                            .ToString()))).FullName;
                 }
             }
             string[] rezultNames = new string[CountFile];
             for (int i = 0; i < CountFile; i++)
-                rezultNames[i] = Path.Combine(fileDirectory, Path.GetRandomFileName() + ".bmp");
+                rezultNames[i] = Path.Combine(fileDirectory, (Path.GetRandomFileName() + (DType == DirectoryType.Model?".model":".bmp")));
             return rezultNames;
         }
 

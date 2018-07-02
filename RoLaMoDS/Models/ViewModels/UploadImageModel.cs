@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using RoLaMoDS.Attributes;
 namespace RoLaMoDS.Models.ViewModels
 {
+    /// <summary>
+    /// Base model for all uploads
+    /// </summary>
     public class UploadImageModel
     {
         [RangeWithSpecial(5, 50,0)]

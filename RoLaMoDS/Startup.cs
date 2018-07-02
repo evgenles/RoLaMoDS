@@ -60,6 +60,8 @@ namespace RoLaMoDS
             services.AddTransient<IMainControllerService, MainControllerSevice>();
             services.AddSingleton<IImageValidator, ImageValidator>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddTransient<IRecognizeService, RecognizeService>();
+
             services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using RoLaMoDS.Models;
 using RoLaMoDS.Services.Interfaces;
 using RoLaMoDS.Extention;
@@ -23,12 +24,12 @@ namespace RoLaMoDS.Services
         /// Divide an image into cells with scale. 
         /// </summary>
         /// <param name="image">Image to divide</param>
-        /// <param name="scale">Scale of image. Minimum scale 1:5, maximum scale 1:50</param>
+        /// <param name="scale">Scale of image. Minimum scale 5:1, maximum scale 1:50</param>
         /// <returns>List of cells</returns>
         private IEnumerable<Cell> DivideImageIntoCells(Image image, int scale)
         {
             List<Cell> arr = new List<Cell>(100);
-            cCell = (int)System.Math.Round((double)scale / 5);
+            cCell = (int)System.Math.Round((double)scale / 2.5);
             int cellWidth = image.Width / cCell;
             int cellHeight = image.Height / cCell;
             for (int i = 0; i < cCell; i++)
@@ -73,16 +74,22 @@ namespace RoLaMoDS.Services
         /// <returns>Result image</returns>
         public Image FormResultImage(IEnumerable<Cell> cells)
         {
-            Image firstImage = ((List<Cell>)cells)[0].CellImage;
-            Image bmp = new Bitmap(firstImage.Width * cCell, firstImage.Height * cCell);
-            using (Graphics gr = Graphics.FromImage(bmp))
+            var numerator = (cells).GetEnumerator();
+            if (numerator.MoveNext())
             {
-                foreach (var cell in cells)
+                Image firstImage = numerator.Current.CellImage;
+                int countCell = (int)System.Math.Sqrt(cells.Count());
+                Image bmp = new Bitmap(firstImage.Width * countCell, firstImage.Height * countCell);
+                using (Graphics gr = Graphics.FromImage(bmp))
                 {
-                    gr.DrawImage(cell.CellImage, cell.X * firstImage.Width, cell.Y * firstImage.Height);
+                    foreach (var cell in cells)
+                    {
+                        gr.DrawImage(cell.CellImage, cell.X * firstImage.Width, cell.Y * firstImage.Height);
+                    }
                 }
+                return bmp;
             }
-            return bmp;
+            return null;
         }
 
         public IEnumerator<Cell> GetEnumerator() =>

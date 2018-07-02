@@ -1,4 +1,4 @@
-﻿function toFormData(form) {
+﻿function toFormData(form, multipleFile = false) {
     var fdata = new FormData();
     var elements = form.querySelectorAll("input, select, textarea");
     for (var i = 0; i < elements.length; ++i) {
@@ -9,7 +9,13 @@
 
         if (name) {
             if (element.getAttribute("type") == "file") {
-                fdata.append(name, element.files[0])
+                if (!multipleFile) {
+                    fdata.append(name, element.files[0]);
+                }
+                else {
+                    for (var j = 0; j < element.files.length; ++j)
+                        fdata.append(name, element.files[j])
+                }
             }
             else {
                 fdata.append(name, value);
@@ -17,6 +23,12 @@
         }
     }
     return fdata;
+}
+
+function handleEvent(f, passedInElement) {
+    return function (e) {
+        f(e, passedInElement);
+    };
 }
 
 function toJSONData(form) {
@@ -163,13 +175,13 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         fetch("/Main/UploadImageFromFile", {
             method: "POST",
-            body: toFormData(formFile),
+            body: toFormData(formFile, false),
             credentials: 'same-origin',
         }).then((response) => response.json())
             .then((json) => {
                 json = JSON.parse(json);
                 insertActiveImageFromJSON(json);
-                formFile.querySelector("#Image-Upload-Input ~ label > span").innerHTML="Выбрать файл изображения";
+                formFile.querySelector("#Image-Upload-Input ~ label > span").innerHTML = "Выбрать файл изображения";
             });
     });
 
@@ -208,6 +220,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     var signInForm = document.getElementById("SignIn").querySelector("form");
+    var authorizeMessage = document.getElementById("SuccessAuthorize");
+
     signInForm.addEventListener("submit", (e) => {
         e.preventDefault();
         fetch("/User/SignIn", {
@@ -221,6 +235,17 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((json) => {
                 json = JSON.parse(json);
                 console.log(json);
+                if (json.code == 200) {
+                    authorizeMessage.getElementsByClassName("ResultText")[0].innerHTML = json.data;
+                    authorizeMessage.classList.add("Show");
+
+                    location.href = "#SelectImage";
+                    document.getElementsByClassName("UserClass")[0].innerText="Выйти";
+                    setTimeout(() => {
+                        authorizeMessage.classList.remove("Show")
+                    }, 6000);
+
+                }
             });
     });
 
@@ -274,4 +299,126 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
+    var TrainForm = document.getElementById("TrainModel").getElementsByTagName("form")[0];
+    var messages = document.getElementsByClassName("Message");
+    var message = messages[0];
+
+    TrainForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("/Recognize/TrainModel", {
+            method: "POST",
+            body: toFormData(TrainForm, true),
+            credentials: 'same-origin',
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+                document.getElementById("ResultTrain").innerText = json.data * 100 + "%";
+                document.getElementById("ResultTrainForm").classList.remove("Hide");
+            });
+        setTimeout(() => {
+            message.classList.add("Show")
+        }, 10000);
+        setTimeout(() => {
+            message.classList.remove("Show")
+        }, 15000);
+    });
+    for (let ms = 0; ms < messages.length; ++ms) {
+        messages[ms].querySelector("button[name=Close]")
+            .addEventListener("click", handleEvent((e) => {
+                messages[ms].classList.remove("Show");
+            }, ms));
+    }
+    var TrainButton = document.getElementById("TrainModelMenuButton");
+    var ModelSelect = TrainForm.querySelector("select[name=ModelURL]");
+    var ModelClassSelect = TrainForm.querySelector("select[name=Class]");
+    TrainButton.addEventListener("click", (e) => {
+        ModelSelect.innerHTML = "<option value ='' selected disabled/>";
+        fetch("/Recognize/GetModels", {
+            method: "Get",
+            credentials: 'same-origin',
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+                if (json.code == 200) {
+                    for (var i = 0; i < json.data.length; i++) {
+                        let el = document.createElement("option");
+                        el.value = json.data[i].URL;
+                        el.innerText = json.data[i].Name;
+                        ModelSelect.appendChild(el);
+                    }
+                }
+            });
+    });
+    ModelSelect.addEventListener("change", e => {
+        ModelClassSelect.innerHTML = "<option value ='' selected disabled/>";
+        fetch("/Recognize/GetClassModels?URL=" + ModelSelect.value, {
+            method: "Get",
+            credentials: 'same-origin',
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+                if (json.code == 200) {
+                    for (var i = 0; i < json.data.length; i++) {
+                        let el = document.createElement("option");
+                        el.value = json.data[i].Id;
+                        el.innerText = json.data[i].Name;
+                        ModelClassSelect.appendChild(el);
+                    }
+                }
+            });
+    });
+    var recognizeButton = document.getElementById("StartRecognizeButton");
+    var recognizeResultPage = document.getElementById("RecognizePage");
+    var SelectImageForm = document.getElementById("SelectImage").getElementsByTagName("form")[0];
+    var SelectedImageURL = null;
+    SelectImageForm.addEventListener("submit", e => {
+        e.preventDefault();
+        SelectedImageURL = imgList.getElementsByClassName("ActiveImage")[0].src;
+    });
+    recognizeButton.addEventListener("click", e => {
+        recognizeResultPage.getElementsByClassName("Loading")[0].classList.remove("Hide");
+        let resultRec = recognizeResultPage.getElementsByClassName("ResultRecognize")[0];
+        resultRec.innerHTML = "";
+        fetch("/Recognize/StartRecognize", {
+            method: "POST",
+            body: JSON.stringify({ ModelURL: "model1", SatelliteURL: SelectedImageURL }),
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then((response) => response.json())
+            .then((json) => {
+                json = JSON.parse(json);
+                console.log(json);
+                if (json.code == 200) {
+                    var len = json.data.length;
+                    let div =document.createElement("div");
+                    div.innerHTML = "Результаты распознавания:";
+                    let header = resultRec.appendChild(div);
+                    var tbl = document.createElement("table");
+
+                    for (var i = 0; i < len; i++) {
+                        var tr = document.createElement("tr");
+                        for (var j = 0; j < len; j++) {
+                            var td = document.createElement("td");
+                            var spn = document.createElement("div");
+                            spn.innerText = "Обьект: " + json.data[i][j].Class;
+                            td.appendChild(spn);
+                            var spn = document.createElement("div");
+                            spn.innerText = "Высота: " + json.data[i][j].Height;
+                            td.appendChild(spn);
+                            tr.appendChild(td);
+                        }
+                        tbl.appendChild(tr);
+                    }
+                    resultRec.appendChild(tbl);
+                    recognizeResultPage.getElementsByClassName("Loading")[0].classList.add("Hide");
+
+                }
+
+            });
+    });
 });

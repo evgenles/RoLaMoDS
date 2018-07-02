@@ -56,7 +56,7 @@ namespace RoLaMoDS.Tests.Services
                 Longitude = 0,
                 Scale = 17
             };
-            var ret = await MainControllerService.UploadImageFromFile(model);
+            var ret = await MainControllerService.UploadImageFromFile(model,Guid.Empty);
             Assert.True(File.Exists(cd + "\\images\\101.bmp"));
             var expected = (new { resultImagePath = "\\images\\101.bmp" }, 200, "");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -77,7 +77,7 @@ namespace RoLaMoDS.Tests.Services
                 Longitude = 0,
                 Scale = 17
             };
-            var ret = await MainControllerService.UploadImageFromURL(model);
+            var ret = await MainControllerService.UploadImageFromURL(model,Guid.Empty);
             Assert.True(File.Exists(cd + "\\images\\101.bmp"));
             var expected = (new { resultImagePath = "\\images\\101.bmp" }, 200, "");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -98,7 +98,7 @@ namespace RoLaMoDS.Tests.Services
                 Longitude = 0,
                 Scale = 17
             };
-            var ret = await MainControllerService.UploadImageFromURL(model);
+            var ret = await MainControllerService.UploadImageFromURL(model,Guid.Empty);
             Assert.False(File.Exists(cd + "\\images\\101.bmp"));
             var expected = ("", 404, "Host_Not_found");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -120,7 +120,7 @@ namespace RoLaMoDS.Tests.Services
                 Zoom = 17,
                 MapType = MapTypes.Bing
             };
-            var ret = await MainControllerService.UploadImageFromMaps(model);
+            var ret = await MainControllerService.UploadImageFromMaps(model,Guid.Empty);
             Assert.True(File.Exists(cd + "\\images\\101.bmp"));
             var expected = (new { resultImagePath = "\\images\\101.bmp" }, 200, "");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -144,7 +144,7 @@ namespace RoLaMoDS.Tests.Services
                 Zoom = 20,
                 MapType = MapTypes.Bing
             };
-            var ret = await MainControllerService.UploadImageFromMaps(model);
+            var ret = await MainControllerService.UploadImageFromMaps(model,Guid.Empty);
             Assert.False(File.Exists(cd + "\\images\\101.bmp"));
             var expected = ("", 400, "Image_So_Zommed");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -167,7 +167,7 @@ namespace RoLaMoDS.Tests.Services
                 Zoom = 17,
                 MapType = MapTypes.Google
             };
-            var ret = await MainControllerService.UploadImageFromMaps(model);
+            var ret = await MainControllerService.UploadImageFromMaps(model,Guid.Empty);
             Assert.True(File.Exists(cd + "\\images\\101.bmp"));
             var expected = (new { resultImagePath = "\\images\\101.bmp" }, 200, "");
             Assert.Equal(expected.Item2, ret.Item2);
@@ -189,7 +189,7 @@ namespace RoLaMoDS.Tests.Services
                 Zoom = 21,
                 MapType = MapTypes.Google
             };
-            var ret = await MainControllerService.UploadImageFromMaps(model);
+            var ret = await MainControllerService.UploadImageFromMaps(model,Guid.Empty);
             Assert.False(File.Exists(cd + "\\images\\101.bmp"));
             var expected = ("", 400, "Image_So_Zommed");
             Assert.Equal(expected.Item2, ret.Item2);

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoLaMoDS.Attributes
 {
+    /// <summary>
+    /// Attribute or validate range and aditional value
+    /// </summary>
      [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter,
         AllowMultiple = false)]
     class RangeWithSpecialAttribute : RangeAttribute

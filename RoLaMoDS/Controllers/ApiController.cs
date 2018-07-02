@@ -16,6 +16,10 @@ namespace RoLaMoDS.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
+        /// <summary>
+        /// Get all error keys in modelstate
+        /// </summary>
+        /// <returns>Errors in string. Separeted by ";"</returns>
         protected string GetErrorsKeys()
         {
             string errors = "";
@@ -29,6 +33,10 @@ namespace RoLaMoDS.Controllers
             return errors;
         }
 
+        /// <summary>
+        /// Get active user guid
+        /// </summary>
+        /// <returns>User Guid; Guid.Empty if unauthorize</returns>
         public Guid GetUserId()
         {
             Guid userid = Guid.Empty;
@@ -37,7 +45,20 @@ namespace RoLaMoDS.Controllers
             return userid;
         }   
 
+        /// <summary>
+        /// Get active user model
+        /// </summary>
+        /// <returns>User model</returns>
+        public async Task<UserModel> GetActiveUser() =>
+                await _userManager.GetUserAsync(User);
 
+        /// <summary>
+        /// Convert Data to jsonResult
+        /// </summary>
+        /// <param name="data">Object to return</param>
+        /// <param name="code">State code</param>
+        /// <param name="message">Message about error</param>
+        /// <returns></returns>
         public static JsonResult JSON(object data, int code = 200, string message = "")
         {
             return new JsonResult(JsonConvert.SerializeObject(new

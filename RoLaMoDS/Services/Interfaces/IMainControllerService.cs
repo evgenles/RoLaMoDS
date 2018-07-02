@@ -7,8 +7,6 @@ namespace RoLaMoDS.Services.Interfaces
 {
     public interface IMainControllerService
     {
-        void StartRecognize();
-
         /// <summary>
         /// Upload image from file with longitude, lantitude and scale
         /// </summary>

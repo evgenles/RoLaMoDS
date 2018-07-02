@@ -7,5 +7,6 @@ namespace RoLaMoDS.Models
     public class UserModel : IdentityUser<Guid>
     {
         public List<ImageDBModel> DownloadedImages { get; set; } = new List<ImageDBModel>();
+        public List<ModelsNNDB> ModelsNN {get;set;} = new List<ModelsNNDB>();
     }
 }

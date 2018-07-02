@@ -27,11 +27,21 @@ namespace RoLaMoDS.Controllers
             _mainControllerService = mainControllerService;
         }
 
-
+        /// <summary>
+        /// Action for main view
+        /// </summary>
+        /// <returns>View</returns>
         public IActionResult Index()
         {
             return View();
         }
+
+        /// <summary>
+        /// Upload image to server
+        /// </summary>
+        /// <param name="model">Model to upload</param>
+        /// <typeparam name="T">Type of image</typeparam>
+        /// <returns>Rezult uploading</returns>
         private async Task<IActionResult> Upload<T>(T model) where T : UploadImageModel
         {
             if (ModelState.IsValid)
@@ -58,19 +68,33 @@ namespace RoLaMoDS.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Upload image from file
+        /// </summary>
+        /// <param name="model">Model of uploading file</param>
+        /// <returns>Rezult uploading</returns>
         [HttpPost]
         public async Task<IActionResult> UploadImageFromFile(UploadImageFileModel model)
         {
             return await Upload<UploadImageFileModel>(model);
         }
 
+        /// <summary>
+        /// Upload image from URL
+        /// </summary>
+        /// <param name="model">Model of uploading image url</param>
+        /// <returns>Rezult uploading</returns>
         [HttpPost]
         public async Task<IActionResult> UploadImageFromURL([FromBody] UploadImageURLModel model)
         {
             return await Upload<UploadImageURLModel>(model);
         }
 
+        /// <summary>
+        /// Upload image from maps
+        /// </summary>
+        /// <param name="model">Model of uploading maps</param>
+        /// <returns>Rezult uploading</returns>
         [HttpPost]
         public async Task<IActionResult> UploadImageFromMap([FromBody] UploadImageMapModel model)
         {

@@ -1,5 +1,8 @@
 namespace RoLaMoDS.Models.UserViewModels
 {
+    /// <summary>
+    /// View model for logining and external registration
+    /// </summary>
     public class LoginViewModel
     {
         public string Login { get; set; }

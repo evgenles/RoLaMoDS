@@ -3,6 +3,9 @@ using RoLaMoDS.Models.Enums;
 
 namespace RoLaMoDS.Models.ViewModels
 {
+    /// <summary>
+    /// Model for uploading from maps
+    /// </summary>
     public class UploadImageMapModel:UploadImageModel
     {
         [Required]

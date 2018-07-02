@@ -9,6 +9,8 @@ namespace RoLaMoDS.Data
     {
         public DbSet<ImageDBModel> Images {get;set;}
         public DbSet<CellDB> Cells {get;set;}
+        public DbSet<ModelsNNDB> ModelsNN {get;set;}
+        public DbSet<ModelNNClass> ModelsNNClasses { get; set; }
         public ApplicationDBContext(DbContextOptions options) : base(options)
         {
         }

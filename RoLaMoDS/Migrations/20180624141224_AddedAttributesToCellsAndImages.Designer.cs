@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RoLaMoDS.Data;
 
 namespace RoLaMoDS.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20180624141224_AddedAttributesToCellsAndImages")]
+    partial class AddedAttributesToCellsAndImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,8 +171,6 @@ namespace RoLaMoDS.Migrations
 
                     b.Property<double>("Longitude");
 
-                    b.Property<Guid?>("ModelNNId");
-
                     b.Property<int>("Scale");
 
                     b.Property<double>("Teperature");
@@ -184,49 +184,9 @@ namespace RoLaMoDS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModelNNId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("RoLaMoDS.Models.ModelNNClass", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid?>("ModelId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("NumberClass");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModelId");
-
-                    b.ToTable("ModelsNNClasses");
-                });
-
-            modelBuilder.Entity("RoLaMoDS.Models.ModelsNNDB", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsPublished");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("URL");
-
-                    b.Property<Guid?>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ModelsNN");
                 });
 
             modelBuilder.Entity("RoLaMoDS.Models.UserModel", b =>
@@ -334,26 +294,8 @@ namespace RoLaMoDS.Migrations
 
             modelBuilder.Entity("RoLaMoDS.Models.ImageDBModel", b =>
                 {
-                    b.HasOne("RoLaMoDS.Models.ModelsNNDB", "ModelNN")
-                        .WithMany("Images")
-                        .HasForeignKey("ModelNNId");
-
                     b.HasOne("RoLaMoDS.Models.UserModel", "User")
                         .WithMany("DownloadedImages")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("RoLaMoDS.Models.ModelNNClass", b =>
-                {
-                    b.HasOne("RoLaMoDS.Models.ModelsNNDB", "Model")
-                        .WithMany("ModelNNClass")
-                        .HasForeignKey("ModelId");
-                });
-
-            modelBuilder.Entity("RoLaMoDS.Models.ModelsNNDB", b =>
-                {
-                    b.HasOne("RoLaMoDS.Models.UserModel", "User")
-                        .WithMany("ModelsNN")
                         .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618

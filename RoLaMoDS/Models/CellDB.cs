@@ -1,9 +1,10 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoLaMoDS.Models
 {
+    /// <summary>
+    /// Cell for database
+    /// </summary>
     public class CellDB : Cell
     {
         public Guid? Id { get; set; }

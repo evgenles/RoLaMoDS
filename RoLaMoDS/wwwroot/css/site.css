@@ -266,10 +266,11 @@ select.Form-Field ~ .Form-Label
 }
 .Form-Button{
     position: relative;
+    font: 400 13.3333px Arial;
+
     padding: 5px 20px;
     letter-spacing: 0.05em;
     font-size: 1.25em;
-    float: right;
     border: none;
     background: rgba(11, 121, 246,.5);
     color: #F3F9FE;
@@ -277,6 +278,10 @@ select.Form-Field ~ .Form-Label
     height: 40px;
     cursor: pointer;
     margin: 1em 1em;
+    box-sizing: border-box;
+    display: inline-block;
+    line-height: 30px;
+
 }
 .Form-Field[type=file]{
     width: 1px;
@@ -484,13 +489,12 @@ select.Form-Field ~ .Form-Label
 .Form-Button.Google {
     background: white;
     color: #444;
-    width: 130px;
     border-radius: 5px;
     border: thin solid #888;
     box-shadow: 1px 1px 1px grey;
     padding: 2px 20px 2px 0px; 
     white-space: nowrap;
-    max-width: 130px;
+    max-width: 150px;
   }
   a>label {
     display: inline-block;
@@ -551,4 +555,58 @@ select.Form-Field ~ .Form-Label
     width: calc(100% - 10px);
     height: calc(100% - 10px);
     z-index: 1;
+}
+.Message{
+    position: fixed;
+    display: block;
+    margin: 0px 3px 3px 0px;
+    border: 2px inset rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.5);
+    min-width: 300px;
+    min-height: 100px;
+    width: auto;
+    height: auto;
+    bottom: 0;
+    transform: translateY(calc(100% + 20px));
+    right: 0;
+    padding: 5px;
+    z-index: 999;
+    transition: ease transform 0.5s;
+}
+.Message.Show{
+    transform:none;
+}
+.Message > *{
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+.Hide{
+    display: none;
+}
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: relative;
+    left: 35%;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+#RecognizePage>.ResultRecognize table {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#RecognizePage>.ResultRecognize table td{
+    border: 2px solid rgb(56, 55, 55);
+    padding: 5px;
+    border-collapse: collapse;
+    
 }

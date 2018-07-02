@@ -10,7 +10,7 @@
         </div>
         <div class="LineContent">
             <div class="Form-Input">
-                <select id="ModelSelect" class="Form-Field" required>
+                <select id="ModelSelect" name="ModelURL" class="Form-Field" required>
                     <option value="" disabled selected></option>
                 </select>         
                 <span class="Select-Highlight"></span>
@@ -23,7 +23,7 @@
         </div>
         <div class="LineContent">
             <div > 
-               <input id ="TrainImages-Upload-Input" class="Form-Field" type="file" name="File" 
+               <input id ="TrainImages-Upload-Input" class="Form-Field" type="file" name="Files"
                     multiple accept="image/*,application/zip" required />
                 <label for="TrainImages-Upload-Input">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 17">
@@ -34,7 +34,7 @@
                 </label>
             </div>
             <div class="Form-Input">
-                <select id="ClassSelect" class="Form-Field" required>
+                <select id="ClassSelect" name="Class" class="Form-Field" required>
                     <option value="" disabled selected></option>
                 </select>         
                 <span class="Select-Highlight"></span>
@@ -47,8 +47,14 @@
                 <button type="submit" class="Form-Button RightButton">Начать обучение</button>
             </div>
         </div>
-        <div class="LineContent">
-            <span class="CenterText">Результаты обучения</span>
+        <div  id="ResultTrainForm" class="Hide">
+            <div class="LineContent">
+                <span class="CenterText">Результаты обучения</span>
+            </div>
+            <div>
+                <span class="CenterText">Тест модели на валидационном множестве показал процент правильного распознавания: </span>
+                <span id="ResultTrain"></span>
+            </div>
         </div>
     </form>
 </div>

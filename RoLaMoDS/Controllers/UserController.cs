@@ -28,10 +28,15 @@ namespace RoLaMoDS.Controllers
         {
             _applicationDBContext = applicationDBContext;
             _userManager = userManager;
-
             _signInManager = signInManager;
             _logger = logger;
         }
+
+        /// <summary>
+        /// User registration
+        /// </summary>
+        /// <param name="model">User model for registration</param>
+        /// <returns>User login (if valid else errors)</returns>
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -46,12 +51,17 @@ namespace RoLaMoDS.Controllers
                 }
                 else
                 {
-                    //TODO: Register error
+                    return JSON ("", 400, string.Join(';', result.Errors));
                 }
             }
-            return JSON(null, 400, "");
+            return JSON("", 400, "Data not valid");
         }
 
+        /// <summary>
+        /// User sign in
+        /// </summary>
+        /// <param name="model">User model for signing in</param>
+        /// <returns>User login (if valid else errors)</returns>
         public async Task<IActionResult> SignIn([FromBody]LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -62,22 +72,31 @@ namespace RoLaMoDS.Controllers
                 {
                     return JSON(model.Login);
                 }
-                //TODO: SignInError
+                else
+                {
+                    return JSON ("", 401, "Unauthorize");
+                }
             }
             return JSON(null, 400, "");
         }
 
-        public IActionResult Index()
-        {
-            return RedirectToAction("Index", "Main");
-        }
-
+        /// <summary>
+        /// External authorization
+        /// </summary>
+        /// <param name="provider">Provider for authorization (like Google)</param>
+        /// <returns>Authorization challenge</returns>
         public IActionResult OAuth(string provider)
         {
             var redirectUrl = Url.Action(nameof(OAuthCallBack), "User");
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
+
+        /// <summary>
+        /// Callback for external authorization
+        /// </summary>
+        /// <param name="remoteError">External errors</param>
+        /// <returns>Errors or redirect to main action</returns>
         public async Task<IActionResult> OAuthCallBack(string remoteError = null)
         {
             if (remoteError != null)
@@ -107,14 +126,15 @@ namespace RoLaMoDS.Controllers
                     _logger.LogInformation($"User add login to account using {info.LoginProvider} provider.");
                     return RedirectToAction("Index", "Main");
                 }
-                else
-                {
-                    //Error
-                }
             }
             return RedirectToAction("Index", "Main", "OAuthRegister");
         }
 
+        /// <summary>
+        /// Registration when first success external authorize
+        /// </summary>
+        /// <param name="model">Model for registration</param>
+        /// <returns></returns>
         public async Task<IActionResult> OAuthRegister([FromBody] LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -128,20 +148,25 @@ namespace RoLaMoDS.Controllers
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var user = new UserModel { UserName = model.Login, Email = email };
                 var result = await _userManager.CreateAsync(user);
+                string errors = "";
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
+                    var resultAddLogin = await _userManager.AddLoginAsync(user, info);
+                    if (resultAddLogin.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation($"User created an account using {info.LoginProvider} provider.");
                         return RedirectToAction("Index", "Main");
 
                     }
+                    else{
+                        errors = string.Join(';', resultAddLogin.Errors);
+                    }
                 }
-                //ToDO: Errors
+                errors += string.Join(';', result.Errors);
+                return JSON("", 400, errors);
             }
-            return JSON("",400,"Has errors");
+            return JSON("",400,"Data invalid");
         }
     }
 }

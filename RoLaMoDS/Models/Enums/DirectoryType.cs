@@ -7,6 +7,7 @@ namespace RoLaMoDS.Models.Enums
     {
         Upload,
         Recognize,
-        Result
+        Result,
+        Model
     }
 }

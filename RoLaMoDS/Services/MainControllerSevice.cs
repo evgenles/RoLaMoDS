@@ -31,7 +31,7 @@ namespace RoLaMoDS.Services
 
         public void StartRecognize()
         {
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         }
 
         /// <summary>
