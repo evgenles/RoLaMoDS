@@ -1,8 +1,12 @@
 /RoLaMoDS/.vscode
-/RoLaMoDS/bin
+/RoLaMoDS/bin/
 /RoLaMoDS/obj
 /RoLaMoDS/images
 /RoLaMoDS.Tests/bin
 /RoLaMoDS.Tests/obj
 .vs/
+/RoLaMoDSNN/packages
+/RoLaMoDSNN/RoLaMoDSNN/bin
+/RoLaMoDSNN/.vscode
+/RoLaMoDSNN/RoLaMoDSNN/obj
 .vscode/
